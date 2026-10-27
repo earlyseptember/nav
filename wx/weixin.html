@@ -136,8 +136,42 @@ input[type=checkbox]{accent-color:#0F4C81;}
 .vtext-bubble{margin-top:5px;max-width:230px;background:#fff;border-radius:6px;padding:9px 11px;font-size:15px;line-height:1.5;color:#191919;word-break:break-word;white-space:pre-wrap;}
 .v-secs{font-size:14px;}
 .row.right .v-secs,.row.right .v-wave{color:#0e5a1f;}
-.v-dot{width:7px;height:7px;border-radius:50%;background:#fa5151;flex:none;}
-.img-ph{width:180px;height:126px;background:linear-gradient(135deg,#e9eef4,#dbe3ec);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;border-radius:6px;}
+    .v-dot{width:7px;height:7px;border-radius:50%;background:#fa5151;flex:none;}
+    /* 转账气泡：未收取=鲜亮橙，已收取/已退还=褪色灰褐 */
+    .bubble.transfer-bubble{max-width:240px;padding:10px 13px;background:#EFA04F;color:#fff;}
+    .bubble.transfer-bubble.received{background:#AA7840;}
+    .row.right .bubble.transfer-bubble{background:#EFA04F;}
+    .row.right .bubble.transfer-bubble.received{background:#AA7840;}
+    .row.left .bubble.transfer-bubble::after{border-right-color:#EFA04F;}
+    .row.right .bubble.transfer-bubble::after{border-left-color:#EFA04F;}
+    .row.left .bubble.transfer-bubble.received::after{border-right-color:#AA7840;}
+    .row.right .bubble.transfer-bubble.received::after{border-left-color:#AA7840;}
+    .transfer-ico{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex:none;}
+    .bubble.transfer-bubble.received .transfer-ico{background:#EDEAE6;}
+    .transfer-main{flex:1;min-width:0;}
+    .transfer-amt{font-size:22px;font-weight:600;line-height:1.15;}
+    .transfer-status{font-size:12px;margin-top:3px;opacity:.95;}
+    .transfer-foot{font-size:11px;margin-top:9px;padding-top:7px;border-top:1px solid rgba(255,255,255,.5);opacity:.85;}
+    /* 红包气泡：未领取=鲜亮橙金(纯色)，已领取/已领完=降饱和哑光土黄褐 */
+    .bubble.redpacket-bubble{max-width:240px;padding:10px 13px;background:#EFA04F;color:#fff;}
+    .bubble.redpacket-bubble.received{background:#AA7840;}
+    .row.right .bubble.redpacket-bubble{background:#EFA04F;}
+    .row.right .bubble.redpacket-bubble.received{background:#AA7840;}
+    .row.left .bubble.redpacket-bubble::after{border-right-color:#EFA04F;}
+    .row.right .bubble.redpacket-bubble::after{border-left-color:#EFA04F;}
+    .row.left .bubble.redpacket-bubble.received::after{border-right-color:#AA7840;}
+    .row.right .bubble.redpacket-bubble.received::after{border-left-color:#AA7840;}
+    .redpacket-ico{width:32px;height:40px;flex:none;display:flex;align-items:center;justify-content:center;}
+    .redpacket-main{flex:1;min-width:0;}
+    .redpacket-bless{font-size:15px;font-weight:500;line-height:1.3;}
+    .bubble.redpacket-bubble.received .redpacket-bless{color:#E6DED5;}
+    .redpacket-status{font-size:12px;margin-top:4px;opacity:.95;}
+    .bubble.redpacket-bubble.received .redpacket-status{color:#E2D3BC;}
+    .redpacket-foot{font-size:11px;margin-top:8px;padding-top:7px;border-top:1px solid rgba(255,255,255,.5);opacity:.9;color:#FFE6BC;}
+    .bubble.redpacket-bubble.received .redpacket-foot{color:#E2D3BC;border-top-color:rgba(255,255,255,.25);}
+    .redpacket-label{font-size:11px;color:#ffe2d6;margin-top:7px;}
+    .redpacket-status{font-size:11px;color:#ffd9d2;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.35);}
+    .img-ph{width:180px;height:126px;background:linear-gradient(135deg,#e9eef4,#dbe3ec);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px;border-radius:6px;}
 .img-ph .ph-icon{font-size:30px;line-height:1;}
 .img-ph .ph-name{font-size:11px;color:#5b6b7c;text-align:center;word-break:break-all;line-height:1.45;max-height:32px;overflow:hidden;}
 .time-chip{text-align:center;font-size:12px;color:#9a9a9a;margin:16px 0 8px;}
@@ -232,6 +266,8 @@ input[type=checkbox]{accent-color:#0F4C81;}
         <button type="button" data-add="text">＋ 文字</button>
         <button type="button" data-add="image">＋ 图片</button>
         <button type="button" data-add="voice">＋ 语音</button>
+        <button type="button" data-add="transfer">＋ 转账</button>
+        <button type="button" data-add="redpacket">＋ 红包</button>
         <button type="button" data-add="time">＋ 时间</button>
         <button type="button" data-add="system">＋ 系统提示</button>
       </div>
@@ -240,12 +276,12 @@ input[type=checkbox]{accent-color:#0F4C81;}
     <section class="panel">
       <h2>使用说明</h2>
       <ul class="tips">
-        <li>消息支持 5 种类型：文字、图片（自定义图片名称，未上传时显示占位图）、语音（可选时长，可填写语音转文字）、时间分割、系统提示。</li>
+        <li>消息支持 7 种类型：文字、图片（自定义图片名称，未上传时显示占位图）、语音（可选时长，可填写语音转文字）、<b>转账</b>（填金额 + 状态：请收款 / 已收款 / 已退还）、<b>红包</b>（填祝福语 + 状态：领取红包 / 已被领取 / 已被领完）、时间分割、系统提示。</li>
         <li>头像支持三种方式：选表情、上传本地图片、粘贴网络图片地址（https://…）。网络图片在导出 PNG 时需对方网站允许跨域，否则导出图中可能空白。</li>
         <li>语音消息可填「语音转文字」：收到的语音未填时显示红点+转文字胶囊，填了则显示为下方白色圆角文字框（无小角，自己发送的同样式）。</li>
         <li>群聊模式可增删成员、分别设置昵称和头像，每条消息可指定发送者。</li>
         <li>所有修改自动保存在本地浏览器，刷新不丢失；也可导出 / 导入 JSON 配置复用。</li>
-        <li>点击「导出 PNG」保存 2 倍清晰度聊天截图，可选是否包含手机边框。</li>
+        <li>点击「导出 PNG」保存 2 倍清晰度聊天截图，可选是否包含手机边框；勾选「长截图（完整内容）」可一次性导出全部聊天记录，消息多时图片会自动变高，适合保存完整对话。</li>
       </ul>
     </section>
   </aside>
@@ -293,6 +329,7 @@ input[type=checkbox]{accent-color:#0F4C81;}
     <div class="stage-actions">
       <button class="btn-primary" id="exportBtn" type="button">导出 PNG 图片</button>
       <label class="chk"><input type="checkbox" id="frameToggle" checked><span>含手机边框</span></label>
+      <label class="chk" title="勾选后导出完整聊天内容（不局限于当前一屏，消息多时图片会很高）"><input type="checkbox" id="longToggle"><span>长截图（完整内容）</span></label>
       <button class="btn-ghost" id="copyTextBtn" type="button">复制聊天文字</button>
       <button class="btn-ghost" id="exportJson" type="button">导出配置</button>
       <button class="btn-ghost" id="importJsonBtn" type="button">导入配置</button>
@@ -358,6 +395,10 @@ input[type=checkbox]{accent-color:#0F4C81;}
         { id:'s4v', type:'voice', from:'other', content:'', voiceSecs: 4, voiceText:'' },
         { id:'s5', type:'voice', from:'other', content:'', voiceSecs: 6, voiceText:'路线我发群里了，明早八点东门见，别迟到啊' },
         { id:'s6', type:'text', from:'self', content:'刚听了几句，山上信号不太好，晚上给你回电话' },
+        { id:'s8', type:'transfer', from:'other', content:'', amount:'88.00', transferStatus:'请收款' },
+        { id:'s8b', type:'transfer', from:'self', content:'', amount:'123.45', transferStatus:'已收款' },
+        { id:'s9', type:'redpacket', from:'self', content:'', bless:'周末愉快 🧧', redStatus:'已被领取' },
+        { id:'s9b', type:'redpacket', from:'other', content:'', bless:'恭喜发财，大吉大利', redStatus:'领取红包' },
         { id:'t2', type:'time', from:'self', content:'周六 09:20' },
         { id:'s7', type:'system', from:'self', content:'对方拍了拍你' }
       ]
@@ -392,13 +433,17 @@ input[type=checkbox]{accent-color:#0F4C81;}
       return (Array.isArray(arr) ? arr : []).map(function(m){
         return {
           id: m.id || uid(),
-          type: ['text','image','voice','time','system'].indexOf(m.type) >= 0 ? m.type : 'text',
+          type: ['text','image','voice','time','system','transfer','redpacket'].indexOf(m.type) >= 0 ? m.type : 'text',
           from: m.from || 'self',
           content: m.content || '',
           imageName: m.imageName || '',
           imageData: m.imageData || '',
           voiceSecs: Math.max(1, parseInt(m.voiceSecs, 10) || 3),
-          voiceText: m.voiceText || ''
+          voiceText: m.voiceText || '',
+          amount: (m.amount === '' || m.amount === undefined || m.amount === null) ? '0.00' : String(m.amount),
+          transferStatus: m.transferStatus || '请收款',
+          bless: m.bless || '恭喜发财，大吉大利',
+          redStatus: m.redStatus || '领取红包'
         };
       });
     }
@@ -678,14 +723,14 @@ input[type=checkbox]{accent-color:#0F4C81;}
         head += '<span class="tag">' + (m.type === 'time' ? '时间分割' : '系统提示') + '</span>';
       }else if(state.mode === 'single'){
         head += seg('from', m.from, [{v:'other',t:'对方'},{v:'self',t:'我'}]);
-        head += seg('type', m.type, [{v:'text',t:'文字'},{v:'image',t:'图片'},{v:'voice',t:'语音'}]);
+        head += seg('type', m.type, [{v:'text',t:'文字'},{v:'image',t:'图片'},{v:'voice',t:'语音'},{v:'transfer',t:'转账'},{v:'redpacket',t:'红包'}]);
       }else{
         var opts = '<option value="self">我（' + esc(state.me.name || '我') + '）</option>';
         state.group.members.forEach(function(mem){
           opts += '<option value="' + mem.id + '"' + (m.from === mem.id ? ' selected' : '') + '>' + esc(mem.name) + '</option>';
         });
         head += '<select class="sender-sel">' + opts + '</select>';
-        head += seg('type', m.type, [{v:'text',t:'文字'},{v:'image',t:'图片'},{v:'voice',t:'语音'}]);
+        head += seg('type', m.type, [{v:'text',t:'文字'},{v:'image',t:'图片'},{v:'voice',t:'语音'},{v:'transfer',t:'转账'},{v:'redpacket',t:'红包'}]);
       }
       head += '<div class="ops">'
         + '<button type="button" data-act="up" title="上移">↑</button>'
@@ -712,6 +757,18 @@ input[type=checkbox]{accent-color:#0F4C81;}
           + '<span class="chip" data-sec="10">10"</span><span class="chip" data-sec="20">20"</span><span class="chip" data-sec="30">30"</span>'
           + '</div>'
           + '<input type="text" class="v-text-in" placeholder="语音转文字（选填），如：好的，我知道了" value="' + esc(m.voiceText || '') + '">';
+      }else if(m.type === 'transfer'){
+        body = '<div class="field" style="margin-bottom:8px;"><label>转账金额（元）</label>'
+          + '<input type="text" class="tf-amt" placeholder="如 100.00" value="' + esc(m.amount) + '"></div>'
+          + '<div class="field" style="margin-bottom:0;"><label>状态</label>'
+          + seg('tf-status', m.transferStatus, [{v:'请收款',t:'请收款'},{v:'已收款',t:'已收款'},{v:'已退还',t:'已退还'}])
+          + '</div>';
+      }else if(m.type === 'redpacket'){
+        body = '<div class="field" style="margin-bottom:8px;"><label>祝福语</label>'
+          + '<input type="text" class="rp-bless" placeholder="如：恭喜发财，大吉大利" value="' + esc(m.bless) + '"></div>'
+          + '<div class="field" style="margin-bottom:0;"><label>状态</label>'
+          + seg('rp-status', m.redStatus, [{v:'领取红包',t:'领取红包'},{v:'已被领取',t:'已被领取'},{v:'已被领完',t:'已被领完'}])
+          + '</div>';
       }else if(m.type === 'system'){
         body = '<input type="text" class="sys-input" placeholder="如：对方拍了拍你" value="' + esc(m.content) + '">';
       }else{
@@ -735,6 +792,10 @@ input[type=checkbox]{accent-color:#0F4C81;}
       });
       var vtIn = item.querySelector('.v-text-in');
       if(vtIn) vtIn.addEventListener('input', function(){ m.voiceText = vtIn.value; save(); renderChat(); });
+      var tfAmt = item.querySelector('.tf-amt');
+      if(tfAmt) tfAmt.addEventListener('input', function(){ m.amount = tfAmt.value; save(); renderChat(); });
+      var rpBless = item.querySelector('.rp-bless');
+      if(rpBless) rpBless.addEventListener('input', function(){ m.bless = rpBless.value; save(); renderChat(); });
       item.querySelectorAll('.chip').forEach(function(c){
         c.onclick = function(){
           m.voiceSecs = parseInt(c.dataset.sec, 10);
@@ -767,12 +828,20 @@ input[type=checkbox]{accent-color:#0F4C81;}
           var g = b.dataset.g, v = b.dataset.v;
           if(g === 'from'){
             m.from = v;
+          }else if(g === 'tf-status'){
+            m.transferStatus = v;
+          }else if(g === 'rp-status'){
+            m.redStatus = v;
           }else{
             m.type = v;
             if(v === 'image' && !m.imageName) m.imageName = '未命名图片.jpg';
             if(v === 'voice' && !m.voiceSecs) m.voiceSecs = 3;
             if(v === 'voice' && m.voiceText === undefined) m.voiceText = '';
             if(v === 'system' && !m.content) m.content = '对方拍了拍你';
+            if(v === 'transfer' && m.amount === undefined) m.amount = '100.00';
+            if(v === 'transfer' && m.transferStatus === undefined) m.transferStatus = '请收款';
+            if(v === 'redpacket' && m.bless === undefined) m.bless = '恭喜发财，大吉大利';
+            if(v === 'redpacket' && m.redStatus === undefined) m.redStatus = '领取红包';
           }
           save(); renderMsgs(); renderChat();
         };
@@ -829,6 +898,50 @@ input[type=checkbox]{accent-color:#0F4C81;}
       + '</svg>';
     var secsHtml = '<span class="v-secs">' + s + '"</span>';
     return '<div class="v-row">' + (isSelf ? (secsHtml + waveSent) : (waveRecv + secsHtml)) + '</div>';
+  }
+  /* ============ 转账 / 红包 内部渲染 ============ */
+  function transferIcon(stroke){
+    return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+stroke+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'
+      + '<path d="M3 8h11"/>'
+      + '<path d="M13 4l4 4-4 4"/>'
+      + '<path d="M21 16H10"/>'
+      + '<path d="M12 12l-4 4 4 4"/>'
+      + '</svg>';
+  }
+  function transferInner(m){
+    var recv = (m.transferStatus === '已收款' || m.transferStatus === '已退还');
+    var stroke = recv ? '#9A928A' : '#EFA04F';
+    return '<div style="display:flex;gap:11px;align-items:center;min-width:176px;">'
+      + '<div class="transfer-ico">' + transferIcon(stroke) + '</div>'
+      + '<div class="transfer-main">'
+      + '<div class="transfer-amt">¥ ' + esc(m.amount || '0.00') + '</div>'
+      + '<div class="transfer-status">' + esc(m.transferStatus || '请收款') + '</div>'
+      + '</div></div>'
+      + '<div class="transfer-foot">微信转账</div>';
+  }
+  function redpacketInner(m){
+    var recv = (m.redStatus === '已被领取' || m.redStatus === '已被领完');
+    var env = recv ? '#9A5A38' : '#E84A3C';
+    var envDk = recv ? '#7A4428' : '#C62E26';
+    var coin = recv ? '#C9A876' : '#F6C94A';
+    var coinDk = recv ? '#A8885C' : '#E0A93A';
+    var yen = recv ? '#6E3320' : '#E0452F';
+    var arc = recv ? '#B98A5E' : '#ffd9a0';
+    var svg = '<svg width="24" height="30" viewBox="0 0 32 40">'
+      + '<rect x="1" y="1" width="30" height="38" rx="5" fill="' + env + '"/>'
+      + '<rect x="1" y="1" width="30" height="38" rx="5" fill="none" stroke="' + envDk + '" stroke-width="1"/>'
+      + '<path d="M4 13 Q16 19 28 13" stroke="' + arc + '" stroke-width="1.4" fill="none" opacity=".75"/>'
+      + '<path d="M4 17 Q16 23 28 17" stroke="' + arc + '" stroke-width="1.4" fill="none" opacity=".55"/>'
+      + '<circle cx="16" cy="24" r="8" fill="' + coin + '" stroke="' + coinDk + '" stroke-width="1"/>'
+      + '<text x="16" y="28.5" font-size="12" font-weight="700" fill="' + yen + '" text-anchor="middle" font-family="PingFang SC,Microsoft YaHei,sans-serif">¥</text>'
+      + '</svg>';
+    return '<div style="display:flex;gap:11px;align-items:center;min-width:176px;">'
+      + '<div class="redpacket-ico">' + svg + '</div>'
+      + '<div class="redpacket-main">'
+      + '<div class="redpacket-bless">' + esc(m.bless || '恭喜发财，大吉大利') + '</div>'
+      + (recv ? '<div class="redpacket-status">' + esc(m.redStatus) + '</div>' : '')
+      + '</div></div>'
+      + '<div class="redpacket-foot">微信红包</div>';
   }
   /* ============ 状态栏（安卓布局，SVG 真实图标） ============ */
   var SB_ICONS = {
@@ -922,6 +1035,10 @@ input[type=checkbox]{accent-color:#0F4C81;}
         if(!isSelf && !hasVt){ voiceExtras += '<span class="v-dot" title="未读"></span>';
           voiceExtras += '<span class="v-totext">转文字</span>'; }
         if(hasVt) voiceTextHtml = '<div class="vtext-bubble">' + esc(m.voiceText) + '</div>';
+      }else if(m.type === 'transfer'){
+        inner = transferInner(m);
+      }else if(m.type === 'redpacket'){
+        inner = redpacketInner(m);
       }else{
         inner = esc(m.content);
       }
@@ -933,7 +1050,11 @@ input[type=checkbox]{accent-color:#0F4C81;}
           + (voiceExtras ? '<div class="v-extra">' + voiceExtras + '</div>' : '')
           + '</div>' + voiceTextHtml;
       }else{
-        bubbleHtml = '<div class="bubble' + (m.type === 'image' ? ' img-bubble' : '') + '">' + inner + '</div>';
+        var extraCls = '';
+        if(m.type === 'image') extraCls = ' img-bubble';
+        else if(m.type === 'transfer') extraCls = ' transfer-bubble' + ((m.transferStatus === '已收款' || m.transferStatus === '已退还') ? ' received' : '');
+        else if(m.type === 'redpacket') extraCls = ' redpacket-bubble' + ((m.redStatus === '已被领取' || m.redStatus === '已被领完') ? ' received' : '');
+        bubbleHtml = '<div class="bubble' + extraCls + '">' + inner + '</div>';
       }
       chat.insertAdjacentHTML('beforeend',
         '<div class="row ' + (isSelf ? 'right' : 'left') + '">'
@@ -970,6 +1091,8 @@ input[type=checkbox]{accent-color:#0F4C81;}
       var m = { id: uid(), type: t, from: 'self', content: '' };
       if(t === 'image'){ m.imageName = '未命名图片.jpg'; m.imageData = ''; m.voiceSecs = 3; }
       if(t === 'voice'){ m.voiceSecs = 3; m.voiceText = ''; m.content = ''; }
+      if(t === 'transfer'){ m.amount = '100.00'; m.transferStatus = '请收款'; m.content = ''; }
+      if(t === 'redpacket'){ m.bless = '恭喜发财，大吉大利'; m.redStatus = '领取红包'; m.content = ''; }
       if(t === 'time'){ m.content = nowChip(); }
       if(t === 'system'){ m.content = '对方拍了拍你'; }
       cur().messages.push(m);
@@ -979,7 +1102,7 @@ input[type=checkbox]{accent-color:#0F4C81;}
     };
   });
 
-  /* ============ 导出 PNG ============ */
+  /* ============ 导出 PNG（支持长截图） ============ */
   $('#exportBtn').onclick = async function(){
     if(typeof html2canvas === 'undefined'){
       toast('导出组件未加载成功，请检查网络后刷新页面重试');
@@ -988,25 +1111,48 @@ input[type=checkbox]{accent-color:#0F4C81;}
     var phone = $('#phone');
     var btn = $('#exportBtn');
     var withFrame = $('#frameToggle').checked;
+    var longShot = $('#longToggle').checked;
     phone.classList.toggle('no-frame', !withFrame);
+    /* 长截图：临时把手机/屏幕/聊天区展开为完整内容高度，导出后还原 */
+    var screenEl = phone.querySelector('.screen');
+    var chatEl = $('#chat');
+    var prev = null;
+    if(longShot){
+      prev = {
+        phone: phone.style.height,
+        screen: screenEl.style.height,
+        chatOverflow: chatEl.style.overflow,
+        chatFlex: chatEl.style.flex
+      };
+      phone.style.height = 'auto';
+      screenEl.style.height = 'auto';
+      chatEl.style.overflow = 'visible';
+      chatEl.style.flex = '0 0 auto';
+    }
     btn.disabled = true;
-    btn.textContent = '正在生成…';
+    btn.textContent = longShot ? '正在生成长截图…' : '正在生成…';
     try{
-      await new Promise(function(r){ setTimeout(r, 80); });
+      await new Promise(function(r){ setTimeout(r, longShot ? 250 : 80); });
       var canvas = await html2canvas(phone, { scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false });
       var a = document.createElement('a');
       var d = new Date();
       var p = function(n){ return String(n).padStart(2, '0'); };
-      a.download = '微信聊天记录_' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes()) + '.png';
+      a.download = '微信聊天记录_' + (longShot ? '长截图_' : '') + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes()) + '.png';
       a.href = canvas.toDataURL('image/png');
       document.body.appendChild(a);
       a.click();
       a.remove();
-      toast('图片已导出');
+      toast(longShot ? ('长截图已导出（' + canvas.width + '×' + canvas.height + ' px）') : '图片已导出');
     }catch(err){
       console.error(err);
       toast('导出失败：' + (err && err.message ? err.message : '未知错误'));
     }finally{
+      if(prev){
+        phone.style.height = prev.phone;
+        screenEl.style.height = prev.screen;
+        chatEl.style.overflow = prev.chatOverflow;
+        chatEl.style.flex = prev.chatFlex;
+      }
       phone.classList.toggle('no-frame', !$('#frameToggle').checked);
       btn.disabled = false;
       btn.textContent = '导出 PNG 图片';
@@ -1037,6 +1183,8 @@ input[type=checkbox]{accent-color:#0F4C81;}
       var who = senderName(m.from);
       if(m.type === 'image') return who + '：[图片 ' + (m.imageName || '未命名图片') + ']';
       if(m.type === 'voice') return who + '：[语音 ' + m.voiceSecs + '"' + (m.voiceText ? '：“' + m.voiceText + '”' : '') + ']';
+      if(m.type === 'transfer') return who + '：[转账 ¥' + (m.amount || '0.00') + '，' + (m.transferStatus || '请收款') + ']';
+      if(m.type === 'redpacket') return who + '：[红包「' + (m.bless || '恭喜发财，大吉大利') + '」' + (m.redStatus || '领取红包') + ']';
       return who + '：' + m.content;
     }).join('\n');
     if(navigator.clipboard && navigator.clipboard.writeText){
