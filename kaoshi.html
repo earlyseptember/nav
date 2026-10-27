@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学校监考抽签系统</title>
+<style>
+  :root {
+    --blue-50: #eff6ff;
+    --blue-100: #dbeafe;
+    --blue-200: #bfdbfe;
+    --blue-300: #93c5fd;
+    --blue-400: #60a5fa;
+    --blue-500: #3b82f6;
+    --blue-600: #2563eb;
+    --blue-700: #1d4ed8;
+    --blue-800: #1e40af;
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --gold: #f59e0b;
+    --gold-light: #fef3c7;
+    --red-50: #fef2f2;
+    --red-500: #ef4444;
+    --green-50: #f0fdf4;
+    --green-500: #22c55e;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: linear-gradient(135deg, #eff6ff 0%, #f0f4ff 25%, #eef2ff 50%, #f0f4ff 75%, #eff6ff 100%);
+    min-height: 100vh;
+    color: var(--slate-800);
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    padding: 32px 0 20px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--blue-700);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .header .subtitle {
+    font-size: 14px;
+    color: var(--slate-500);
+    letter-spacing: 1px;
+  }
+
+  /* Round info */
+  .round-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 0 auto 24px;
+    padding: 10px 20px;
+    background: white;
+    border-radius: 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    width: fit-content;
+    flex-wrap: wrap;
+  }
+
+  .round-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--slate-200);
+    transition: all 0.4s ease;
+    flex-shrink: 0;
+  }
+
+  .round-dot.active {
+    background: var(--blue-500);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+  }
+
+  .round-dot.done {
+    background: var(--green-500);
+  }
+
+  .round-label {
+    font-size: 11px;
+    color: var(--slate-500);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .round-label.current {
+    color: var(--blue-600);
+    font-weight: 700;
+  }
+
+  .round-arrow {
+    color: var(--slate-300);
+    font-size: 11px;
+  }
+
+  /* Main card */
+  .main-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.03), 0 0 0 1px rgba(0,0,0,0.03);
+    padding: 32px;
+    margin-bottom: 20px;
+  }
+
+  /* Lottery button */
+  .lottery-section {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .lottery-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 48px;
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lottery-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37,99,235,0.4);
+    background: linear-gradient(135deg, var(--blue-600), var(--blue-700));
+  }
+
+  .lottery-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+  }
+
+  .lottery-btn:disabled {
+    background: var(--slate-300);
+    box-shadow: none;
+    cursor: not-allowed;
+    color: var(--slate-500);
+  }
+
+  .lottery-btn .btn-icon {
+    font-size: 24px;
+  }
+
+  .lottery-btn.rolling {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
+    50% { box-shadow: 0 4px 30px rgba(37,99,235,0.6); }
+  }
+
+  /* Animation area */
+  .animation-area {
+    margin: 16px auto 0;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rolling-text {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--blue-600);
+    letter-spacing: 4px;
+    font-variant-numeric: tabular-nums;
+    font-family: "SF Mono", "Cascadia Code", "Consolas", monospace;
+  }
+
+  /* Result table - compact dual layout */
+  .result-section {
+    margin-top: 8px;
+  }
+
+  .result-section h3 {
+    font-size: 14px;
+    color: var(--slate-600);
+    margin-bottom: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .result-section h3 .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--blue-100);
+    color: var(--blue-700);
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .table-dual {
+    display: flex;
+    gap: 12px;
+  }
+
+  .table-half {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .table-half .tbl-header {
+    background: var(--blue-600);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+  }
+
+  .table-half .tbl-header > span {
+    padding: 5px 3px;
+    text-align: center;
+  }
+
+  .table-half .tbl-row {
+    display: flex;
+    border-bottom: 1px solid var(--slate-100);
+    font-size: 11px;
+    transition: background 0.3s ease;
+  }
+
+  .table-half .tbl-row:last-child {
+    border-bottom: none;
+  }
+
+  .table-half .tbl-row:hover {
+    background: var(--blue-50);
+  }
+
+  .table-half .tbl-row > span {
+    padding: 3px 3px;
+    text-align: center;
+  }
+
+  .table-half .tbl-body {
+    border: 1px solid var(--slate-200);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+  }
+
+  .col-room-s {
+    flex: 0 0 55px;
+    font-weight: 600;
+    color: var(--slate-700);
+    background: rgba(248,250,252,0.8);
+    white-space: nowrap;
+    font-size: 11px;
+  }
+
+  .col-round-s {
+    flex: 1;
+    min-width: 0;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .new-assign {
+    animation: highlightRow 2s ease;
+  }
+
+  @keyframes highlightRow {
+    0% { background: var(--gold-light); }
+    100% { background: transparent; }
+  }
+
+  .current-highlight {
+    background: rgba(59,130,246,0.06);
+    font-weight: 700;
+    color: #2563eb;
+  }
+
+  .round-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 4px;
+  }
+
+  .round-badge.r1 { background: var(--slate-100); color: var(--slate-600); }
+  .round-badge.r2 { background: #fef3c7; color: #b45309; }
+  .round-badge.r3 { background: #dbeafe; color: #1d4ed8; }
+
+  /* History section */
+  .history-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.03), 0 0 0 1px rgba(0,0,0,0.03);
+    padding: 24px 32px;
+    margin-bottom: 20px;
+  }
+
+  .history-card h3 {
+    font-size: 15px;
+    color: var(--slate-600);
+    margin-bottom: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 10px;
+  }
+
+  .history-panel {
+    background: var(--slate-50);
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--slate-100);
+  }
+
+  .history-panel h4 {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--slate-600);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .history-panel .mini-list {
+    font-size: 11px;
+    color: var(--slate-500);
+    max-height: 120px;
+    overflow-y: auto;
+    line-height: 1.6;
+  }
+
+  .history-panel.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-400);
+    font-size: 13px;
+    min-height: 60px;
+  }
+
+  /* Actions */
+  .actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .btn-secondary {
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1.5px solid var(--slate-200);
+    background: white;
+    color: var(--slate-600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-secondary:hover {
+    background: var(--slate-50);
+    border-color: var(--slate-300);
+    color: var(--slate-700);
+  }
+
+  .btn-secondary.danger:hover {
+    background: var(--red-50);
+    border-color: var(--red-500);
+    color: var(--red-500);
+  }
+
+  .btn-secondary.primary {
+    border-color: var(--blue-300);
+    color: var(--blue-600);
+  }
+
+  .btn-secondary.primary:hover {
+    background: var(--blue-50);
+    border-color: var(--blue-500);
+  }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.show {
+    display: flex;
+  }
+
+  .modal {
+    background: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    width: 560px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+
+  .modal h2 {
+    font-size: 18px;
+    color: var(--slate-800);
+    margin-bottom: 16px;
+  }
+
+  .modal label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate-600);
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+
+  .modal textarea {
+    width: 100%;
+    min-height: 140px;
+    border: 1.5px solid var(--slate-200);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+    color: var(--slate-700);
+    line-height: 1.7;
+  }
+
+  .modal textarea:focus {
+    outline: none;
+    border-color: var(--blue-400);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  }
+
+  .modal .hint {
+    font-size: 11px;
+    color: var(--slate-400);
+    margin-top: 4px;
+  }
+
+  .modal .btn-row {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  .btn-save {
+    padding: 10px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    background: var(--blue-600);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-save:hover {
+    background: var(--blue-700);
+  }
+
+  .btn-cancel {
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1.5px solid var(--slate-200);
+    border-radius: 8px;
+    background: white;
+    color: var(--slate-500);
+    cursor: pointer;
+  }
+
+  .btn-cancel:hover {
+    background: var(--slate-50);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .toast.show {
+    opacity: 1;
+  }
+
+  .toast.warning {
+    background: #fef3c7;
+    color: #92400e;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.2);
+  }
+
+  .toast.success {
+    background: #d1fae5;
+    color: #065f46;
+    box-shadow: 0 4px 12px rgba(34,197,94,0.2);
+  }
+
+  .toast.info {
+    background: #dbeafe;
+    color: #1e40af;
+    box-shadow: 0 4px 12px rgba(59,130,246,0.2);
+  }
+
+  /* Copyright */
+  .copyright {
+    text-align: center;
+    padding: 24px 20px;
+    font-size: 12px;
+    color: var(--slate-400);
+    letter-spacing: 1px;
+    border-top: 1px solid var(--slate-100);
+    margin-top: 12px;
+  }
+
+  /* 响应式 */
+  @media (max-width: 768px) {
+    .table-dual {
+      flex-direction: column;
+    }
+
+    .history-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .main-card {
+      padding: 16px;
+    }
+
+    .lottery-btn {
+      padding: 14px 36px;
+      font-size: 16px;
+    }
+
+    .col-room-s {
+      flex: 0 0 60px;
+      font-size: 10px;
+    }
+
+    .table-half .tbl-row > span,
+    .table-half .tbl-header > span {
+      padding: 3px 2px;
+      font-size: 11px;
+    }
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--slate-400);
+  }
+
+  .empty-state .icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+  }
+
+  .empty-state p {
+    font-size: 14px;
+  }
+
+  /* Count inline control in actions row */
+  .count-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: white;
+    border: 1.5px solid var(--slate-200);
+    border-radius: 8px;
+  }
+
+  .count-label {
+    font-size: 13px;
+    color: var(--slate-600);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .count-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--slate-200);
+    background: white;
+    color: var(--slate-600);
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    line-height: 1;
+    padding: 0;
+  }
+
+  .count-btn:hover {
+    background: var(--blue-50);
+    border-color: var(--blue-400);
+    color: var(--blue-600);
+  }
+
+  .count-btn:active {
+    transform: scale(0.95);
+  }
+
+  .count-input {
+    width: 60px;
+    height: 32px;
+    text-align: center;
+    border: 1.5px solid var(--slate-200);
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--blue-700);
+    background: white;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .count-input:focus {
+    border-color: var(--blue-400);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  }
+
+  .count-hint {
+    font-size: 11px;
+    color: var(--slate-400);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+  .count-inline {
+    padding: 4px 10px;
+    gap: 4px;
+  }
+
+  .count-label {
+    font-size: 12px;
+  }
+
+  .count-input {
+    width: 50px;
+    font-size: 14px;
+  }
+
+  .count-hint {
+    display: none;
+  }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Lottery button at top -->
+  <div class="lottery-section" style="margin-bottom:20px;">
+    <button class="lottery-btn" id="lotteryBtn" onclick="startLottery()">
+      <span class="btn-icon">🎯</span>
+      <span id="btnText">开始抽签</span>
+    </button>
+    <div class="animation-area" id="animArea"></div>
+  </div>
+
+  <!-- Round indicator -->
+  <div class="round-bar" id="roundBar">
+  </div>
+
+  <!-- Main card -->
+  <div class="main-card">
+    <!-- Header moved here -->
+    <div class="header" style="padding:8px 0 12px;">
+      <h1>🎯 学校监考抽签系统</h1>
+      <p class="subtitle" id="subtitle">42 考场 · 42 教师 · 最多 7 轮不重复随机分配</p>
+    </div>
+
+    <!-- Current result -->
+    <div class="result-section" id="resultSection">
+      <h3>📋 分配结果 <span class="badge" id="resultBadge" style="display:none"></span></h3>
+      <div class="table-dual" id="tableDual">
+        <!-- Left: rooms 1-21 -->
+        <div class="table-half" id="tableLeft">
+          <div class="tbl-header" id="headerLeft">
+            <span class="col-room-s">考场</span>
+          </div>
+          <div class="tbl-body" id="tableBodyLeft"></div>
+        </div>
+        <!-- Right: rooms 22-42 -->
+        <div class="table-half" id="tableRight">
+          <div class="tbl-header" id="headerRight">
+            <span class="col-room-s">考场</span>
+          </div>
+          <div class="tbl-body" id="tableBodyRight"></div>
+        </div>
+      </div>
+      <div class="empty-state" id="emptyState">
+        <div class="icon">🎲</div>
+        <p>点击上方按钮开始抽签，支持最多 7 轮不重复分配</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- History panels -->
+  <div class="history-card">
+    <h3 id="historyTitle">📊 各轮统计（共 7 轮）</h3>
+    <div class="history-grid" id="historyGrid">
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <span class="count-inline">
+      <span class="count-label">考场/教师数量：</span>
+      <button class="count-btn" onclick="adjustCount(-1)" title="减少">−</button>
+      <input type="number" class="count-input" id="countInput" value="42" min="2" max="200" onchange="onCountInput()">
+      <button class="count-btn" onclick="adjustCount(1)" title="增加">+</button>
+    </span>
+    <span class="count-inline">
+      <span class="count-label">抽签次数：</span>
+      <button class="count-btn" onclick="adjustRounds(-1)" title="减少">−</button>
+      <input type="number" class="count-input" id="roundsInput" value="7" min="1" max="7" onchange="onRoundsInput()">
+      <button class="count-btn" onclick="adjustRounds(1)" title="增加">+</button>
+    </span>
+    <button class="btn-secondary danger" onclick="resetAll()">🔄 全部重置</button>
+    <button class="btn-secondary" onclick="exportResult()">📤 导出CSV</button>
+    <button class="btn-secondary primary" onclick="triggerImport()">📥 导入历史</button>
+    <button class="btn-secondary primary" onclick="openNameEditor()">✏️ 编辑名单</button>
+    <input type="file" id="importFile" accept=".csv" style="display:none" onchange="importCSV(event)">
+  </div>
+</div>
+
+<!-- Copyright -->
+<div class="copyright">
+  © 2026 学校监考抽签系统
+</div>
+
+<!-- Edit names modal -->
+<div class="modal-overlay" id="nameModal" onclick="if(event.target===this)closeNameEditor()">
+  <div class="modal">
+    <h2>✏️ 编辑名单</h2>
+    <label id="roomLabel">考场名称（每行一个，共42行）</label>
+    <textarea id="roomNamesInput" placeholder="第01考场&#10;第02考场&#10;..."></textarea>
+    <p class="hint" id="roomHint">默认：第01考场 ~ 第42考场</p>
+
+    <label id="teacherLabel">教师名称（每行一个，共42行）</label>
+    <textarea id="teacherNamesInput" placeholder="教师01&#10;教师02&#10;..."></textarea>
+    <p class="hint" id="teacherHint">默认：教师01 ~ 教师42</p>
+
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="closeNameEditor()">取消</button>
+      <button class="btn-save" onclick="saveNames()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// 全局状态
+// ============================================================
+let N = 42;
+let MAX_ROUNDS = 7; // 最多支持7轮不重复抽签，动态受N限制
+
+let roomNames = Array.from({length: N}, (_, i) => `第${String(i+1).padStart(2,'0')}考场`);
+let teacherNames = Array.from({length: N}, (_, i) => `教师${String(i+1).padStart(2,'0')}`);
+
+// history[round] = array of length N, history[round][roomIndex] = teacherIndex
+let history = []; // 0-index: history[0] = round1, ..., history[6] = round7
+
+let currentRound = 0; // 已完成轮数：0=未开始, 1~7=已完成1~7轮
+let isRolling = false;
+
+// ============================================================
+// 洗牌算法 (Fisher-Yates)
+// ============================================================
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ============================================================
+// 约束分配算法（匈牙利算法变体 - 随机化二分图匹配）
+// forbidden[teacherIndex] = Set of room indices that this teacher CANNOT go to
+// 返回: assignment[teacherIndex] = roomIndex
+// ============================================================
+function findConstrainedAssignment(forbidden) {
+  const matchR = new Array(N).fill(-1); // matchR[room] = teacher
+  const assignment = new Array(N).fill(-1); // assignment[teacher] = room
+
+  // 构建每个老师的候选考场列表
+  const candidates = [];
+  for (let t = 0; t < N; t++) {
+    const cands = [];
+    for (let r = 0; r < N; r++) {
+      if (!forbidden[t].has(r)) {
+        cands.push(r);
+      }
+    }
+    // 随机打乱候选列表以增加随机性
+    candidates.push(shuffle(cands));
+  }
+
+  // 随机处理老师顺序
+  const teacherOrder = shuffle([...Array(N).keys()]);
+
+  function dfs(t, visited) {
+    for (const r of candidates[t]) {
+      if (visited.has(r)) continue;
+      visited.add(r);
+
+      if (matchR[r] === -1 || dfs(matchR[r], visited)) {
+        matchR[r] = t;
+        assignment[t] = r;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  for (const t of teacherOrder) {
+    const visited = new Set();
+    if (!dfs(t, visited)) {
+      // 理论上不会发生（42个元素，每个最多排除2个）
+      throw new Error('无法找到可行分配，请重试');
+    }
+  }
+
+  // 验证
+  for (let t = 0; t < N; t++) {
+    if (assignment[t] === -1) throw new Error('分配不完整');
+    if (forbidden[t].has(assignment[t])) throw new Error('分配违反约束');
+  }
+
+  return assignment;
+}
+
+// ============================================================
+// 生成一轮分配
+// roundIndex: 0 = 第1轮, 1 = 第2轮, 2 = 第3轮
+// ============================================================
+function generateAssignment(roundIndex) {
+  if (roundIndex === 0) {
+    // 第1轮：完全随机
+    const rooms = shuffle([...Array(N).keys()]);
+    const assignment = new Array(N);
+    for (let t = 0; t < N; t++) {
+      assignment[t] = rooms[t];
+    }
+    return assignment;
+  }
+
+  // 第k轮：排除前k轮去过的考场
+  const forbidden = [];
+  for (let t = 0; t < N; t++) {
+    const fb = new Set();
+    for (let r = 0; r < roundIndex; r++) {
+      // history[r][roomIndex] = teacherIndex
+      // 我们需要找到老师t在轮次r中去过的考场
+      // history[r] 是 roomIndex -> teacherIndex
+      // 所以需要找到满足 history[r][room] === t 的 room
+      for (let room = 0; room < N; room++) {
+        if (history[r][room] === t) {
+          fb.add(room);
+          break;
+        }
+      }
+    }
+    forbidden.push(fb);
+  }
+
+  return findConstrainedAssignment(forbidden);
+}
+
+// ============================================================
+// 抽签主流程
+// ============================================================
+async function startLottery() {
+  if (isRolling) return;
+
+  if (currentRound >= MAX_ROUNDS) {
+    showToast(`已完成全部${MAX_ROUNDS}轮抽签，请点击"全部重置"后重新开始`, 'warning');
+    return;
+  }
+
+  isRolling = true;
+  const btn = document.getElementById('lotteryBtn');
+  const btnText = document.getElementById('btnText');
+  btn.disabled = true;
+  btn.classList.add('rolling');
+
+  // 动画阶段
+  const animArea = document.getElementById('animArea');
+  const roundLabel = currentRound + 1;
+
+  btnText.textContent = `第${roundLabel}轮抽签中...`;
+
+  // 滚动动画
+  const rollingText = document.createElement('div');
+  rollingText.className = 'rolling-text';
+  animArea.innerHTML = '';
+  animArea.appendChild(rollingText);
+
+  // 动画持续约2秒
+  const animDuration = 2000;
+  const animInterval = 60;
+  const animSteps = Math.floor(animDuration / animInterval);
+
+  for (let i = 0; i < animSteps; i++) {
+    await sleep(animInterval);
+    // 显示随机数字对
+    const r1 = Math.floor(Math.random() * N) + 1;
+    const r2 = Math.floor(Math.random() * N) + 1;
+    rollingText.textContent = `${String(r1).padStart(2,'0')} ⇄ ${String(r2).padStart(2,'0')}`;
+  }
+
+  // 计算分配
+  let assignment;
+  try {
+    assignment = generateAssignment(currentRound);
+  } catch (e) {
+    animArea.innerHTML = '';
+    btn.disabled = false;
+    btn.classList.remove('rolling');
+    btnText.textContent = '开始抽签';
+    isRolling = false;
+    showToast('算法异常，请重试', 'warning');
+    return;
+  }
+
+  // 保存结果
+  // assignment[teacherIndex] = roomIndex, 但我们要存 roomIndex -> teacherIndex
+  const roundResult = new Array(N);
+  for (let t = 0; t < N; t++) {
+    roundResult[assignment[t]] = t;
+  }
+  history.push(roundResult);
+  currentRound++;
+
+  // 停止动画
+  rollingText.style.transition = 'all 0.3s ease';
+  rollingText.style.color = '#22c55e';
+  rollingText.textContent = '✓ 完成！';
+  await sleep(500);
+  animArea.innerHTML = '';
+
+  // 更新UI
+  updateAllUI();
+
+  btn.classList.remove('rolling');
+  btn.disabled = false;
+
+  if (currentRound >= MAX_ROUNDS) {
+    btnText.textContent = `已完成${MAX_ROUNDS}轮`;
+    btn.style.background = 'var(--slate-400)';
+    showToast(`🎉 ${MAX_ROUNDS}轮抽签全部完成！`, 'success');
+  } else {
+    btnText.textContent = `第${currentRound+1}轮抽签`;
+    showToast(`第${currentRound}轮抽签完成！点击继续第${currentRound+1}轮`, 'success');
+  }
+
+  isRolling = false;
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// ============================================================
+// 更新所有UI
+// ============================================================
+function updateAllUI() {
+  buildRoundBar();
+  buildTableHeaders();
+  updateRoundDots();
+  updateResultTable();
+  updateHistoryPanels();
+  updateButtonState();
+  document.getElementById('historyTitle').textContent = `📊 各轮统计（共 ${MAX_ROUNDS} 轮）`;
+
+  const emptyState = document.getElementById('emptyState');
+  const tableDual = document.getElementById('tableDual');
+  if (currentRound > 0) {
+    emptyState.style.display = 'none';
+    tableDual.style.display = 'flex';
+  } else {
+    emptyState.style.display = '';
+    tableDual.style.display = 'none';
+    emptyState.querySelector('p').textContent =
+      `点击上方按钮开始抽签，支持最多 ${MAX_ROUNDS} 轮不重复分配`;
+  }
+}
+
+// 构建轮次指示器
+function buildRoundBar() {
+  const bar = document.getElementById('roundBar');
+  let html = '';
+  for (let i = 1; i <= MAX_ROUNDS; i++) {
+    html += `<div class="round-dot" id="dot${i}"></div>`;
+    html += `<span class="round-label" id="label${i}">R${i}</span>`;
+    if (i < MAX_ROUNDS) {
+      html += '<span class="round-arrow">›</span>';
+    }
+  }
+  bar.innerHTML = html;
+}
+
+// 构建表头
+function buildTableHeaders() {
+  let roundHeaders = '';
+  for (let i = 1; i <= MAX_ROUNDS; i++) {
+    roundHeaders += `<span class="col-round-s">第${i}轮</span>`;
+  }
+  document.getElementById('headerLeft').innerHTML = '<span class="col-room-s">考场</span>' + roundHeaders;
+  document.getElementById('headerRight').innerHTML = '<span class="col-room-s">考场</span>' + roundHeaders;
+}
+
+function updateRoundDots() {
+  for (let i = 1; i <= MAX_ROUNDS; i++) {
+    const dot = document.getElementById(`dot${i}`);
+    const label = document.getElementById(`label${i}`);
+    if (!dot || !label) continue;
+    dot.className = 'round-dot';
+    label.className = 'round-label';
+
+    if (i <= currentRound) {
+      dot.classList.add('done');
+    }
+    if (i === currentRound + 1) {
+      dot.classList.add('active');
+      label.classList.add('current');
+    }
+  }
+}
+
+function updateResultTable() {
+  const bodyLeft = document.getElementById('tableBodyLeft');
+  const bodyRight = document.getElementById('tableBodyRight');
+  bodyLeft.innerHTML = '';
+  bodyRight.innerHTML = '';
+
+  // 渲染一个半表
+  function renderHalf(body, startRoom, endRoom) {
+    for (let room = startRoom; room < endRoom; room++) {
+      const row = document.createElement('div');
+      row.className = 'tbl-row';
+      row.innerHTML = '<span class="col-room-s">' + roomNames[room] + '</span>';
+
+      for (let r = 0; r < MAX_ROUNDS; r++) {
+        const span = document.createElement('span');
+        span.className = 'col-round-s';
+        if (r < history.length) {
+          const teacherIdx = history[r][room];
+          span.textContent = teacherNames[teacherIdx];
+          if (r === history.length - 1) {
+            span.classList.add('new-assign', 'current-highlight');
+          }
+        } else {
+          span.textContent = '—';
+          span.style.color = '#cbd5e1';
+        }
+        row.appendChild(span);
+      }
+
+      body.appendChild(row);
+    }
+  }
+
+  const split = Math.ceil(N / 2);
+  renderHalf(bodyLeft, 0, split);
+  renderHalf(bodyRight, split, N);
+
+  // 更新badge
+  const badge = document.getElementById('resultBadge');
+  if (currentRound > 0) {
+    badge.style.display = '';
+    badge.textContent = `最新：第${currentRound}轮`;
+  }
+}
+
+function updateHistoryPanels() {
+  const panelColors = ['#eff6ff', '#fefce8', '#f0fdf4', '#fdf2f8', '#f5f3ff', '#ecfdf5', '#fff7ed'];
+  const panelBorders = ['#bfdbfe', '#fde68a', '#bbf7d0', '#fbcfe8', '#ddd6fe', '#a7f3d0', '#fed7aa'];
+  const dotColors = ['#3b82f6', '#f59e0b', '#22c55e', '#ec4899', '#8b5cf6', '#10b981', '#f97316'];
+
+  const grid = document.getElementById('historyGrid');
+  grid.innerHTML = '';
+
+  for (let r = 1; r <= MAX_ROUNDS; r++) {
+    const panel = document.createElement('div');
+
+    if (r <= history.length) {
+      panel.className = 'history-panel';
+      panel.style.background = panelColors[r - 1];
+      panel.style.border = `1px solid ${panelBorders[r - 1]}`;
+
+      let html = `<h4 style="color:${dotColors[r-1]}">🔹 第${r}轮</h4>`;
+      html += '<div class="mini-list">';
+
+      // 显示前5个
+      for (let room = 0; room < Math.min(5, N); room++) {
+        const t = history[r - 1][room];
+        html += `${roomNames[room]} → <strong>${teacherNames[t]}</strong><br>`;
+      }
+      html += `<span style="color:var(--slate-400)">...共${N}条</span>`;
+      html += '</div>';
+
+      const uniqueTeachers = new Set(history[r - 1]);
+      if (uniqueTeachers.size === N) {
+        html += '<p style="font-size:10px;color:var(--green-500);margin-top:4px">✅ 无重复</p>';
+      }
+
+      panel.innerHTML = html;
+    } else {
+      panel.className = 'history-panel empty';
+      panel.innerHTML = `<span>第${r}轮 — 等待抽签</span>`;
+    }
+
+    grid.appendChild(panel);
+  }
+}
+
+function updateButtonState() {
+  const btn = document.getElementById('lotteryBtn');
+  const btnText = document.getElementById('btnText');
+
+  if (currentRound >= MAX_ROUNDS) {
+    btnText.textContent = `已完成${MAX_ROUNDS}轮`;
+    btn.disabled = true;
+    btn.style.background = 'var(--slate-400)';
+    btn.classList.remove('rolling');
+  } else {
+    btnText.textContent = `第${currentRound+1}轮抽签`;
+    btn.disabled = false;
+    btn.style.background = '';
+  }
+}
+
+// ============================================================
+// 动态修改考场数量
+// ============================================================
+function adjustCount(delta) {
+  const input = document.getElementById('countInput');
+  const newVal = Math.max(2, Math.min(200, N + delta));
+  input.value = newVal;
+  applyCountChange(newVal);
+}
+
+function onCountInput() {
+  const input = document.getElementById('countInput');
+  let val = parseInt(input.value);
+  if (isNaN(val) || val < 2) val = 2;
+  if (val > 200) val = 200;
+  input.value = val;
+  applyCountChange(val);
+}
+
+function applyCountChange(newN) {
+  if (newN === N) return;
+
+  // 检查是否有历史数据
+  if (currentRound > 0) {
+    if (!confirm(`修改考场数量将清除所有 ${currentRound} 轮抽签数据，确定继续？`)) {
+      document.getElementById('countInput').value = N;
+      return;
+    }
+  }
+
+  N = newN;
+  // 轮数不能超过考场数
+  if (MAX_ROUNDS > N) {
+    MAX_ROUNDS = N;
+  }
+
+  // 更新轮数输入框的max
+  const ri = document.getElementById('roundsInput');
+  ri.max = N;
+  ri.value = MAX_ROUNDS;
+
+  // 重建名单
+  roomNames = Array.from({ length: N }, (_, i) => `第${String(i + 1).padStart(2, '0')}考场`);
+  teacherNames = Array.from({ length: N }, (_, i) => `教师${String(i + 1).padStart(2, '0')}`);
+
+  // 重置历史
+  history = [];
+  currentRound = 0;
+  document.getElementById('animArea').innerHTML = '';
+
+  const btn = document.getElementById('lotteryBtn');
+  btn.disabled = false;
+  btn.style.background = '';
+  btn.classList.remove('rolling');
+  document.getElementById('btnText').textContent = '开始抽签';
+
+  document.getElementById('tableDual').style.display = 'none';
+  document.getElementById('emptyState').style.display = '';
+
+  // 更新副标题、空状态文本
+  document.getElementById('subtitle').textContent =
+    `${N} 考场 · ${N} 教师 · 最多 ${MAX_ROUNDS} 轮不重复随机分配`;
+  document.getElementById('emptyState').querySelector('p').textContent =
+    `点击上方按钮开始抽签，支持最多 ${MAX_ROUNDS} 轮不重复分配`;
+
+  updateAllUI();
+  showToast(`✅ 已设为 ${N} 个考场，最多 ${MAX_ROUNDS} 轮不重复`, 'success');
+}
+
+// ============================================================
+// 动态修改抽签次数
+// ============================================================
+function adjustRounds(delta) {
+  const input = document.getElementById('roundsInput');
+  const newVal = Math.max(1, Math.min(N, MAX_ROUNDS + delta));
+  input.value = newVal;
+  applyRoundsChange(newVal);
+}
+
+function onRoundsInput() {
+  const input = document.getElementById('roundsInput');
+  let val = parseInt(input.value);
+  if (isNaN(val) || val < 1) val = 1;
+  if (val > N) val = N;
+  input.value = val;
+  applyRoundsChange(val);
+}
+
+function applyRoundsChange(newR) {
+  if (newR === MAX_ROUNDS) return;
+
+  // 如果当前已完成轮次超过新设置的最大轮次，需截断历史
+  if (newR < currentRound) {
+    if (!confirm(`当前已完成 ${currentRound} 轮，减少抽签次数将丢弃最后 ${currentRound - newR} 轮数据。确定继续？`)) {
+      document.getElementById('roundsInput').value = MAX_ROUNDS;
+      return;
+    }
+    history = history.slice(0, newR);
+    currentRound = newR;
+  }
+
+  MAX_ROUNDS = newR;
+
+  // 更新轮次输入框
+  const ri = document.getElementById('roundsInput');
+  ri.max = N;
+  ri.value = MAX_ROUNDS;
+
+  // 更新副标题、空状态文本
+  document.getElementById('subtitle').textContent =
+    `${N} 考场 · ${N} 教师 · 最多 ${MAX_ROUNDS} 轮不重复随机分配`;
+  document.getElementById('emptyState').querySelector('p').textContent =
+    `点击上方按钮开始抽签，支持最多 ${MAX_ROUNDS} 轮不重复分配`;
+
+  updateAllUI();
+  showToast(`✅ 抽签次数已设为 ${MAX_ROUNDS} 轮`, 'success');
+}
+
+// ============================================================
+// 重置
+// ============================================================
+function resetAll() {
+  if (isRolling) {
+    showToast('抽签进行中，请稍候', 'warning');
+    return;
+  }
+
+  history = [];
+  currentRound = 0;
+  document.getElementById('animArea').innerHTML = '';
+
+  const btn = document.getElementById('lotteryBtn');
+  btn.disabled = false;
+  btn.style.background = '';
+  btn.classList.remove('rolling');
+  document.getElementById('btnText').textContent = '开始抽签';
+
+  document.getElementById('tableDual').style.display = 'none';
+  document.getElementById('emptyState').style.display = '';
+
+  updateAllUI();
+  showToast('已重置，可以重新开始抽签', 'info');
+}
+
+// ============================================================
+// 导出CSV
+// ============================================================
+function exportResult() {
+  if (currentRound === 0) {
+    showToast('暂无数据可导出', 'warning');
+    return;
+  }
+
+  let csv = '\uFEFF考场';
+  for (let r = 0; r < currentRound; r++) {
+    csv += `,第${r+1}轮`;
+  }
+  csv += '\n';
+
+  for (let room = 0; room < N; room++) {
+    csv += roomNames[room];
+    for (let r = 0; r < currentRound; r++) {
+      csv += `,${teacherNames[history[r][room]]}`;
+    }
+    csv += '\n';
+  }
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `监考抽签结果_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV文件已下载', 'success');
+}
+
+// ============================================================
+// 导入历史CSV
+// ============================================================
+function triggerImport() {
+  if (isRolling) {
+    showToast('抽签进行中，请稍候', 'warning');
+    return;
+  }
+  if (currentRound > 0) {
+    if (!confirm('当前已有抽签数据，导入历史将覆盖现有数据。确定继续？')) return;
+  }
+  document.getElementById('importFile').click();
+}
+
+function importCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const text = e.target.result;
+      // 去除BOM
+      const clean = text.replace(/^\uFEFF/, '');
+      const lines = clean.trim().split(/\r?\n/);
+
+      if (lines.length < 2) {
+        showToast('CSV文件格式无效：行数不足', 'warning');
+        return;
+      }
+
+      // 解析表头
+      const header = lines[0].split(',');
+      if (header[0] !== '考场') {
+        showToast('CSV格式错误：第一列应为"考场"', 'warning');
+        return;
+      }
+
+      const numRounds = header.length - 1;
+      if (numRounds < 1 || numRounds > MAX_ROUNDS) {
+        showToast(`CSV轮次数(${numRounds})无效，应为1~${MAX_ROUNDS}轮`, 'warning');
+        return;
+      }
+
+      // 解析数据行
+      const importedRooms = [];
+      const importedHistory = []; // importedHistory[r][room] = teacherName (string)
+
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(',');
+        if (cols.length < header.length) {
+          showToast(`第${i+1}行数据不完整，导入失败`, 'warning');
+          return;
+        }
+        importedRooms.push(cols[0].trim());
+
+        for (let r = 0; r < numRounds; r++) {
+          if (!importedHistory[r]) importedHistory[r] = [];
+          importedHistory[r].push(cols[r + 1].trim());
+        }
+      }
+
+      if (importedRooms.length !== N) {
+        showToast(`CSV考场数量(${importedRooms.length})应为${N}，导入失败`, 'warning');
+        return;
+      }
+
+      // 验证每轮42个教师名都不重复
+      for (let r = 0; r < numRounds; r++) {
+        const unique = new Set(importedHistory[r]);
+        if (unique.size !== N) {
+          showToast(`CSV第${r+1}轮存在重复教师，导入失败`, 'warning');
+          return;
+        }
+      }
+
+      // 从第一轮重建教师名称列表
+      const importedTeachers = importedHistory[0].slice(); // 第1轮的42个教师名
+
+      // 更新全局名单
+      roomNames = importedRooms;
+      teacherNames = importedTeachers;
+
+      // 重建history（使用教师名称→索引的映射）
+      const teacherIndexMap = {};
+      teacherNames.forEach((name, idx) => { teacherIndexMap[name] = idx; });
+
+      history = [];
+      for (let r = 0; r < numRounds; r++) {
+        const roundData = new Array(N);
+        for (let room = 0; room < N; room++) {
+          const tName = importedHistory[r][room];
+          const tIdx = teacherIndexMap[tName];
+          if (tIdx === undefined) {
+            showToast(`CSV第${r+1}轮出现未知教师"${tName}"，导入失败`, 'warning');
+            return;
+          }
+          roundData[room] = tIdx;
+        }
+        history.push(roundData);
+      }
+
+      currentRound = numRounds;
+      updateAllUI();
+
+      const btn = document.getElementById('lotteryBtn');
+      const btnText = document.getElementById('btnText');
+      if (currentRound >= MAX_ROUNDS) {
+        btnText.textContent = `已完成${MAX_ROUNDS}轮`;
+        btn.disabled = true;
+        btn.style.background = 'var(--slate-400)';
+      } else {
+        btnText.textContent = `第${currentRound+1}轮抽签`;
+        btn.disabled = false;
+        btn.style.background = '';
+      }
+
+      showToast(`✅ 成功导入 ${numRounds} 轮历史数据（${N}个考场，${N}位教师）`, 'success');
+    } catch (err) {
+      showToast('CSV解析失败：' + err.message, 'warning');
+    }
+  };
+
+  reader.readAsText(file, 'UTF-8');
+
+  // 清除input以允许重新选择同一文件
+  event.target.value = '';
+}
+
+// ============================================================
+// 编辑名单
+// ============================================================
+function openNameEditor() {
+  document.getElementById('roomNamesInput').value = roomNames.join('\n');
+  document.getElementById('teacherNamesInput').value = teacherNames.join('\n');
+  document.getElementById('roomLabel').textContent = `考场名称（每行一个，共${N}行）`;
+  document.getElementById('teacherLabel').textContent = `教师名称（每行一个，共${N}行）`;
+  document.getElementById('roomHint').textContent = `默认：第01考场 ~ 第${String(N).padStart(2,'0')}考场`;
+  document.getElementById('teacherHint').textContent = `默认：教师01 ~ 教师${String(N).padStart(2,'0')}`;
+  document.getElementById('nameModal').classList.add('show');
+}
+
+function closeNameEditor() {
+  document.getElementById('nameModal').classList.remove('show');
+}
+
+function saveNames() {
+  const roomLines = document.getElementById('roomNamesInput').value.trim().split('\n').filter(l => l.trim());
+  const teacherLines = document.getElementById('teacherNamesInput').value.trim().split('\n').filter(l => l.trim());
+
+  if (roomLines.length !== N) {
+    showToast(`考场名称需要恰好${N}行，当前${roomLines.length}行`, 'warning');
+    return;
+  }
+  if (teacherLines.length !== N) {
+    showToast(`教师名称需要恰好${N}行，当前${teacherLines.length}行`, 'warning');
+    return;
+  }
+
+  roomNames = roomLines.map(l => l.trim());
+  teacherNames = teacherLines.map(l => l.trim());
+  closeNameEditor();
+
+  // 更新显示
+  updateAllUI();
+  showToast('名单已更新', 'success');
+}
+
+// ============================================================
+// Toast
+// ============================================================
+function showToast(msg, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast ${type} show`;
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2500);
+}
+
+// ============================================================
+// 键盘快捷键
+// ============================================================
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeNameEditor();
+  }
+  if (e.key === 'Enter' && !e.target.closest('textarea')) {
+    if (!isRolling && currentRound < MAX_ROUNDS) {
+      startLottery();
+    }
+  }
+});
+
+// ============================================================
+// 初始化
+// ============================================================
+updateAllUI();
+</script>
+
+</body>
+</html>

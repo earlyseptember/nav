@@ -9,6 +9,7 @@
      主题系统：改下面 JS 里的 CURRENT_THEME 数字即可切换风格
      1 星空夜   2 日落暖   3 极光绿   4 墨黑金
      5 樱花粉   6 海洋蓝   7 中国红
+     8 薄荷青   9 暗夜紫金   10 沙漠棕
      ============================================================ */
 
   /* 默认变量（会被主题覆盖）*/
@@ -42,6 +43,7 @@
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    position: relative;
     transition: background .6s;
   }
 
@@ -84,7 +86,7 @@
 
   /* 山峦 + 树剪影（纯 SVG，颜色跟随主题）*/
   .mountain {
-    position: fixed;
+    position: absolute;
     bottom: 0; left: 0; right: 0;
     height: 20vh;
     min-height: 120px;
@@ -136,7 +138,7 @@
     background: var(--ground);
   }
 
-  /* ===== 主体：垂直水平都居中 ===== */
+  /* ===== 主体：垂直水平居中，内容超高时自动增长 ===== */
   .hero {
     position: relative;
     z-index: 1;
@@ -146,7 +148,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 60px 24px 140px;
+    padding: 60px 24px 180px;
   }
 
   .hero h1 {
@@ -178,6 +180,14 @@
     max-width: 760px;
     margin: 34px auto 0;
   }
+  /* 导航中间的分割线（占满整行） */
+  .nav .nav-sep {
+    flex-basis: 100%;
+    height: 1px;
+    margin: 10px 0;
+    background: var(--divider);
+    opacity: 0.7;
+  }
   .nav a {
     padding: 8px 22px;
     font-size: 14px;
@@ -196,8 +206,6 @@
     font-weight: 600;
     transform: translateY(-2px);
   }
-
-  .beian { display: none; }
 
   /* 手机适配 */
   @media (max-width: 640px) {
@@ -240,15 +248,15 @@
     <nav class="nav" id="nav"></nav>
   </section>
 
-  <p class="beian">星光不问赶路人</p>
-
 <script>
   /* ============================================================
-     在这里改数字即可换风格：
+     主题共 10 套，默认每次刷新随机出现一套：
      1 星空夜   2 日落暖   3 极光绿   4 墨黑金
      5 樱花粉   6 海洋蓝   7 中国红
+     8 薄荷青   9 暗夜紫金   10 沙漠棕
+     —— 想固定某套，把下面 CURRENT_THEME 改成对应数字即可
      ============================================================ */
-  const CURRENT_THEME = 1;
+  const CURRENT_THEME = Math.floor(Math.random() * 10) + 1; // 随机 1~10
 
   const THEMES = {
     1: { // 星空夜（默认）
@@ -313,6 +321,33 @@
       titleShadow: 'rgba(90,5,5,.5)', divider: 'rgba(255,224,170,.4)',
       saying: 'rgba(255,244,230,.9)', ground: '#4d0505', star: '#ffd9a0',
       silFilter: 'invert(1) sepia(1) saturate(4) hue-rotate(-20deg) brightness(0.5)'
+    },
+    8: { // 薄荷青
+      bgTop: '#0a2e2a', bgMid: '#1f5f52', bgBottom: '#5bd8b0',
+      text: '#eafffa', muted: 'rgba(234,255,250,.55)',
+      pill: 'rgba(255,255,255,.08)', pillBorder: 'rgba(255,255,255,.3)',
+      pillHoverBg: '#eafffa', pillHoverText: '#0a4f42',
+      titleShadow: 'rgba(0,40,30,.45)', divider: 'rgba(255,255,255,.3)',
+      saying: 'rgba(234,255,250,.88)', ground: '#06211d', star: '#d5fff0',
+      silFilter: 'none'
+    },
+    9: { // 暗夜紫金
+      bgTop: '#16082b', bgMid: '#2d1450', bgBottom: '#5b3b8c',
+      text: '#f6eefc', muted: 'rgba(246,238,252,.55)',
+      pill: 'rgba(212,175,55,.10)', pillBorder: 'rgba(212,175,55,.45)',
+      pillHoverBg: '#e8c96a', pillHoverText: '#2a1450',
+      titleShadow: 'rgba(0,0,0,.5)', divider: 'rgba(212,175,55,.4)',
+      saying: 'rgba(246,238,252,.88)', ground: '#0d0519', star: '#e8c96a',
+      silFilter: 'invert(1) sepia(1) saturate(3) hue-rotate(250deg) brightness(0.5)'
+    },
+    10: { // 沙漠棕
+      bgTop: '#3a1f10', bgMid: '#7a4a28', bgBottom: '#d9a05b',
+      text: '#fff7ec', muted: 'rgba(255,247,236,.6)',
+      pill: 'rgba(255,255,255,.1)', pillBorder: 'rgba(255,220,170,.4)',
+      pillHoverBg: '#ffe9c4', pillHoverText: '#6b3a12',
+      titleShadow: 'rgba(50,25,5,.45)', divider: 'rgba(255,230,190,.35)',
+      saying: 'rgba(255,247,236,.9)', ground: '#241006', star: '#ffe2b0',
+      silFilter: 'none'
     }
   };
 
@@ -336,16 +371,44 @@
 
   /* ===== 导航链接：加一个就复制一行 ===== */
   const NAVS = [
-    { name: "首页",         url: "#" },
-    { name: "在线工具箱",   url: "#" },
-    { name: "域名抢注",     url: "#" },
-    { name: "QQ 群",        url: "#" },
+    { name: "九月初",         url: "september.html" },
+    { name: "白皮书",         url: "pdf.html", newTab: true },
+    { name: "中英对照版",  url: "pdf.html?file=docs/002.pdf&title=比特币白皮书中英文对照版", newTab: true },
+    { name: "助记词表",     url: "bip39.html", newTab: true },
     { name: "哔哩哔哩",     url: "https://www.bilibili.com" },
     { name: "GitHub",       url: "https://github.com" },
+    { name: "Gitee",          url: "https://gitee.com" },
     { name: "菜鸟教程",     url: "https://www.runoob.com" },
-    { name: "掘金",         url: "https://juejin.cn" },
+    { name: "掘金",            url: "https://juejin.cn" },
     { name: "MDN",          url: "https://developer.mozilla.org" },
-    { name: "知乎",         url: "https://www.zhihu.com" },
+    { name: "知乎",            url: "https://www.zhihu.com" },
+    { name: "百度",            url: "https://www.baidu.com" },
+    { name: "Google",       url: "https://www.google.com" },
+    { name: "必应",            url: "https://www.bing.com" },
+    { name: "Stack Overflow", url: "https://stackoverflow.com" },
+    { name: "CSDN",         url: "https://www.csdn.net" },
+    { name: "V2EX",         url: "https://www.v2ex.com" },
+    { name: "少数派",       url: "https://sspai.com" },
+    { name: "36氪",         url: "https://36kr.com" },
+    { name: "微博",         url: "https://weibo.com" },
+    { name: "LeetCode",     url: "https://leetcode.cn" },
+
+  /* ===== 分割线 ===== */
+
+    { name: "九月初",          url: "september.html" },
+    { name: "考场抽签",      url: "kaoshi.html" },
+    { name: "课堂抽签",      url: "ketang.html" },
+    { name: "在线翻译",     url: "https://fanyi.baidu.com" },
+    { name: "腾讯文档",     url: "https://docs.qq.com" },
+    { name: "ProcessOn",    url: "https://www.processon.com" },
+    { name: "图床",         url: "https://sm.ms" },
+    { name: "Unsplash",     url: "https://unsplash.com" },
+    { name: "IconFont",     url: "https://www.iconfont.cn" },
+    { name: "在线工具箱",   url: "https://tool.lu" },
+    { name: "域名抢注",     url: "#" },
+    { name: "QQ 群",        url: "#" },
+    { name: "我的博客",     url: "#" },
+    { name: "关于我",       url: "#" },
   ];
 
   /* ===== 名言警句：每次刷新随机一句 ===== */
@@ -358,12 +421,17 @@
     "纸上得来终觉浅，绝知此事要躬行。",
     "Stay hungry, stay foolish.",
     "业精于勤，荒于嬉。",
+    "星光不问赶路人",
   ];
 
   const navBox = document.getElementById('nav');
-  navBox.innerHTML = NAVS.map(n =>
-    `<a href="${escapeHtml(n.url)}" ${n.url !== '#' ? 'target="_blank" rel="noopener"' : ''}>${escapeHtml(n.name)}</a>`
-  ).join('');
+  navBox.innerHTML = NAVS.map((n, i) => {
+    const isExternal = /^https?:\/\//.test(n.url);
+    const newTab = n.newTab || isExternal;
+    const link = `<a href="${escapeHtml(n.url)}" ${newTab ? 'target="_blank" rel="noopener"' : ''}>${escapeHtml(n.name)}</a>`;
+    // 在第 22 个标签（索引 21）前插入分割线，把标签分成两组
+    return (i === 21 ? '<span class="nav-sep"></span>' : '') + link;
+  }).join('');
 
   document.getElementById('saying').textContent =
     SAYINGS[Math.floor(Math.random() * SAYINGS.length)];
