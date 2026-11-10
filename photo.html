@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图片压缩工具 · 离线版</title>
+<style>
+  :root{
+    --blue:#0F4C81;--blue2:#1A73E8;--blue-soft:#EAF1F8;
+    --bg:#F4F6FA;--card:#FFFFFF;--text:#1F2937;--muted:#6B7280;
+    --border:#E4E9F0;--green:#27AE60;--orange:#E67E22;--red:#C0392B;
+    --shadow:0 2px 12px rgba(15,76,129,.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+    background:var(--bg);color:var(--text);font-size:16px;line-height:1.6;min-height:100vh;
+  }
+  .container{max-width:860px;margin:0 auto;padding:28px 20px 60px;}
+  header{text-align:center;margin-bottom:20px;}
+  header h1{font-size:28px;margin:0 0 4px;color:var(--blue);letter-spacing:1px;}
+  header p{color:var(--muted);font-size:14px;margin:0;}
+
+  /* 上传区 */
+  .drop-zone{
+    border:2px dashed #B9CCDD;border-radius:16px;background:#fff;
+    padding:40px 24px;text-align:center;cursor:pointer;transition:all .18s ease;
+    margin-bottom:20px;
+  }
+  .drop-zone:hover,.drop-zone.drag{border-color:var(--blue2);background:var(--blue-soft);}
+  .drop-zone .icon{font-size:44px;line-height:1;}
+  .drop-zone .main{font-size:18px;font-weight:600;color:var(--blue);margin:8px 0 2px;}
+  .drop-zone .sub{font-size:14px;color:var(--muted);}
+  .drop-zone input{display:none;}
+
+  /* 设置面板 */
+  .settings{
+    background:#fff;border:1px solid var(--border);border-radius:14px;
+    box-shadow:var(--shadow);padding:20px 22px;margin-bottom:22px;
+  }
+  .settings h2{font-size:17px;margin:0 0 14px;color:var(--blue);padding-bottom:10px;border-bottom:2px solid var(--blue-soft);}
+  .s-row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;}
+  .s-field{flex:1;min-width:180px;}
+  .s-field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:#334155;}
+  input[type=number],select{
+    width:100%;font-size:16px;font-family:inherit;color:var(--text);
+    padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:#fff;
+  }
+  input:focus,select:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px rgba(26,115,232,.12);}
+  select{cursor:pointer;}
+  input[type=range]{width:100%;accent-color:var(--blue);height:6px;cursor:pointer;}
+  .range-line{display:flex;align-items:center;gap:10px;}
+  .range-val{font-weight:700;color:var(--blue);min-width:38px;text-align:right;}
+  .hint{font-size:12px;color:var(--muted);margin-top:4px;}
+
+  /* 汇总条 */
+  .summary{
+    display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px;font-size:14px;
+    background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 18px;box-shadow:var(--shadow);
+  }
+  .summary .stat{flex:1;min-width:120px;}
+  .summary .stat .k{color:var(--muted);font-size:13px;}
+  .summary .stat .v{font-size:18px;font-weight:700;color:var(--blue);}
+  .summary .stat .v.save{color:var(--green);}
+
+  /* 结果列表 */
+  .item{
+    display:flex;gap:16px;align-items:center;background:#fff;border:1px solid var(--border);
+    border-radius:14px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px;flex-wrap:wrap;
+  }
+  .thumb{position:relative;flex:0 0 auto;width:100px;height:100px;border-radius:10px;overflow:hidden;background:#F0F3F7;border:1px solid var(--border);}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .thumb .tag{
+    position:absolute;left:0;right:0;bottom:0;font-size:11px;color:#fff;background:rgba(15,76,129,.75);
+    text-align:center;padding:2px 0;
+  }
+  .arrow{font-size:20px;color:var(--muted);flex:0 0 auto;}
+  .info{flex:1;min-width:200px;}
+  .info .name{font-size:15px;font-weight:600;color:#1F2937;word-break:break-all;margin-bottom:8px;}
+  .info .size-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px;}
+  .info .size-line .orig{color:var(--muted);}
+  .info .size-line .arrow2{color:var(--muted);}
+  .info .size-line .new{color:var(--blue);font-weight:700;}
+  .badge{
+    display:inline-block;font-size:13px;font-weight:700;padding:3px 12px;border-radius:999px;
+  }
+  .badge.save{background:#E8F8F0;color:var(--green);}
+  .badge.warn{background:#FDF2E9;color:var(--orange);}
+  .badge.pending{background:var(--blue-soft);color:var(--blue);}
+  .dim-line{font-size:13px;color:var(--muted);margin-top:6px;}
+  .item-actions{flex:0 0 auto;display:flex;flex-direction:column;gap:8px;align-items:stretch;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;justify-content:center;
+    font-size:15px;font-weight:600;padding:10px 20px;border-radius:10px;
+    border:1px solid transparent;cursor:pointer;transition:all .15s ease;line-height:1;white-space:nowrap;
+  }
+  .btn-primary{background:var(--blue);color:#fff;}
+  .btn-primary:hover{background:var(--blue2);}
+  .btn-ghost{background:#fff;color:var(--blue);border-color:var(--blue);}
+  .btn-ghost:hover{background:var(--blue-soft);}
+  .btn-danger{background:#fff;color:var(--muted);border-color:var(--border);}
+  .btn-danger:hover{color:var(--red);border-color:var(--red);}
+
+  .toolbar{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+  .empty-tip{text-align:center;color:var(--muted);padding:40px 0;}
+
+  @media(max-width:640px){
+    .thumb{width:72px;height:72px;}
+    .s-field{min-width:100%;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🖼️ 图片压缩工具</h1>
+    <p>本地压缩 · 数据不上传 · 支持批量多张</p>
+  </header>
+
+  <!-- 上传区 -->
+  <div class="drop-zone" id="dropZone">
+    <div class="icon">📁</div>
+    <div class="main">点击选择，或拖拽图片到这里</div>
+    <div class="sub">支持 JPG / PNG / WebP / BMP 等，可一次选多张</div>
+    <input type="file" id="fileInput" accept="image/*" multiple>
+  </div>
+
+  <!-- 设置 -->
+  <div class="settings">
+    <h2>压缩设置</h2>
+    <div class="s-row">
+      <div class="s-field" style="flex:2;">
+        <label>压缩质量 <span class="range-val" id="qVal">0.80</span></label>
+        <div class="range-line">
+          <input type="range" id="quality" min="0.1" max="1" step="0.05" value="0.8">
+        </div>
+        <div class="hint">数值越小体积越小、画质越低（PNG 为无损，不受此影响）</div>
+      </div>
+      <div class="s-field">
+        <label>输出格式</label>
+        <select id="format">
+          <option value="jpeg" selected>JPEG（照片推荐）</option>
+          <option value="webp">WebP（体积最小）</option>
+          <option value="png">PNG（保留透明）</option>
+        </select>
+      </div>
+      <div class="s-field">
+        <label>限制最大宽度（像素）</label>
+        <input type="number" id="maxW" placeholder="留空不缩放" min="1">
+        <div class="hint">例如填 1280，会把大图等比缩小</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 汇总 -->
+  <div class="summary" id="summary" style="display:none;"></div>
+
+  <!-- 结果 -->
+  <div id="list"></div>
+
+  <div class="toolbar" id="toolbar" style="display:none;">
+    <button class="btn btn-primary" onclick="downloadAll()">全部下载</button>
+    <button class="btn btn-danger" onclick="clearAll()">清空全部</button>
+  </div>
+
+  <div class="empty-tip" id="emptyTip">暂无图片，请先选择</div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var items = []; // {id, file, name, origSize, src, img, outBlob, outSize, outUrl, w, h, error}
+  var seq = 0;
+
+  function fmtSize(bytes){
+    if(bytes < 1024) return bytes + ' B';
+    if(bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/1024/1024).toFixed(2) + ' MB';
+  }
+
+  /* ============ 上传 ============ */
+  var dropZone = $('dropZone'), fileInput = $('fileInput');
+  dropZone.addEventListener('click', function(){ fileInput.click(); });
+  fileInput.addEventListener('change', function(){ handleFiles(fileInput.files); fileInput.value=''; });
+  dropZone.addEventListener('dragover', function(e){ e.preventDefault(); dropZone.classList.add('drag'); });
+  dropZone.addEventListener('dragleave', function(){ dropZone.classList.remove('drag'); });
+  dropZone.addEventListener('drop', function(e){ e.preventDefault(); dropZone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
+
+  function handleFiles(fileList){
+    var files = Array.prototype.slice.call(fileList).filter(function(f){ return f.type.indexOf('image/') === 0; });
+    if(!files.length){ alert('请选择图片文件'); return; }
+    files.forEach(function(f){
+      var item = {
+        id: ++seq, file:f, name:f.name, origSize:f.size, src:URL.createObjectURL(f),
+        img:null, outBlob:null, outSize:null, outUrl:null, w:0, h:0, error:null
+      };
+      items.push(item);
+      loadAndCompress(item);
+    });
+    render();
+  }
+
+  /* ============ 加载并压缩 ============ */
+  function loadAndCompress(item){
+    var img = new Image();
+    img.onload = function(){
+      item.img = img; item.w = img.naturalWidth; item.h = img.naturalHeight;
+      doCompress(item);
+    };
+    img.onerror = function(){ item.error = '图片加载失败'; render(); };
+    img.src = item.src;
+  }
+
+  function doCompress(item){
+    if(!item.img) return;
+    var quality = parseFloat($('quality').value);
+    var format = $('format').value;
+    var maxW = parseInt($('maxW').value, 10) || 0;
+    var img = item.img;
+    var w = img.naturalWidth, h = img.naturalHeight;
+    if(maxW && w > maxW){ var r = maxW / w; w = maxW; h = Math.round(h * r); }
+    var canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    var mime = format === 'jpeg' ? 'image/jpeg' : (format === 'webp' ? 'image/webp' : 'image/png');
+    var q = (format === 'png') ? undefined : quality;
+    canvas.toBlob(function(blob){
+      if(!blob){
+        // WebP 可能不被支持
+        item.error = '该格式当前浏览器不支持';
+        item.outBlob = null; item.outSize = null;
+      } else {
+        item.outBlob = blob; item.outSize = blob.size;
+        if(item.outUrl) URL.revokeObjectURL(item.outUrl);
+        item.outUrl = URL.createObjectURL(blob);
+      }
+      render();
+    }, mime, q);
+  }
+
+  function recompressAll(){
+    items.forEach(function(it){ if(it.img && !it.error) doCompress(it); });
+  }
+
+  /* ============ 渲染 ============ */
+  function extOf(format){
+    return format === 'jpeg' ? 'jpg' : format;
+  }
+
+  function render(){
+    var list = $('list');
+    list.innerHTML = '';
+    if(!items.length){
+      $('emptyTip').style.display = 'block';
+      $('summary').style.display = 'none';
+      $('toolbar').style.display = 'none';
+      return;
+    }
+    $('emptyTip').style.display = 'none';
+    $('toolbar').style.display = 'flex';
+
+    items.forEach(function(item){
+      var el = document.createElement('div');
+      el.className = 'item';
+
+      // 原图缩略图
+      var thumb1 = document.createElement('div');
+      thumb1.className = 'thumb';
+      thumb1.innerHTML = '<img src="' + item.src + '"><span class="tag">原图</span>';
+
+      var arrow = document.createElement('div');
+      arrow.className = 'arrow'; arrow.textContent = '→';
+
+      // 压缩后缩略图
+      var thumb2 = document.createElement('div');
+      thumb2.className = 'thumb';
+      if(item.outUrl){
+        thumb2.innerHTML = '<img src="' + item.outUrl + '"><span class="tag">压缩后</span>';
+      } else if(item.error){
+        thumb2.innerHTML = '<span class="tag">失败</span>';
+      } else {
+        thumb2.innerHTML = '<span class="tag">处理中…</span>';
+      }
+
+      // 信息区
+      var info = document.createElement('div');
+      info.className = 'info';
+      var name = document.createElement('div');
+      name.className = 'name'; name.textContent = item.name;
+
+      var sizeLine = document.createElement('div');
+      sizeLine.className = 'size-line';
+      sizeLine.innerHTML = '<span class="orig">' + fmtSize(item.origSize) + '</span><span class="arrow2">→</span>';
+      if(item.outSize != null){
+        var rate = (1 - item.outSize / item.origSize) * 100;
+        sizeLine.innerHTML += '<span class="new">' + fmtSize(item.outSize) + '</span>';
+        var badge = document.createElement('span');
+        if(rate > 0){ badge.className = 'badge save'; badge.textContent = '节省 ' + rate.toFixed(1) + '%'; }
+        else { badge.className = 'badge warn'; badge.textContent = '增大 ' + Math.abs(rate).toFixed(1) + '%（建议降质量）'; }
+        sizeLine.appendChild(badge);
+      } else if(item.error){
+        sizeLine.innerHTML += '<span class="new" style="color:#C0392B;">' + item.error + '</span>';
+      } else {
+        sizeLine.innerHTML += '<span class="new">压缩中…</span>';
+      }
+      info.appendChild(name);
+      info.appendChild(sizeLine);
+
+      var dimLine = document.createElement('div');
+      dimLine.className = 'dim-line';
+      if(item.w && item.h){
+        var targetW = item.outSize != null ? (function(){ var mw=parseInt($('maxW').value,10)||0; return mw && item.w>mw ? mw : item.w; })() : item.w;
+        var targetH = item.outSize != null ? Math.round(targetW * item.h / item.w) : item.h;
+        dimLine.textContent = item.w + '×' + item.h + ' → ' + targetW + '×' + targetH;
+      }
+      info.appendChild(dimLine);
+
+      // 操作区
+      var actions = document.createElement('div');
+      actions.className = 'item-actions';
+      var dl = document.createElement('button');
+      dl.className = 'btn btn-primary';
+      dl.textContent = '下载';
+      dl.disabled = !item.outBlob;
+      dl.style.opacity = item.outBlob ? '1' : '.45';
+      dl.onclick = function(){ downloadOne(item); };
+      var rm = document.createElement('button');
+      rm.className = 'btn btn-danger'; rm.textContent = '移除';
+      rm.onclick = function(){ removeItem(item.id); };
+      actions.appendChild(dl); actions.appendChild(rm);
+
+      el.appendChild(thumb1); el.appendChild(arrow); el.appendChild(thumb2); el.appendChild(info); el.appendChild(actions);
+      list.appendChild(el);
+    });
+
+    renderSummary();
+  }
+
+  function renderSummary(){
+    var box = $('summary');
+    var totalOrig = 0, totalOut = 0, done = 0;
+    items.forEach(function(it){
+      totalOrig += it.origSize;
+      if(it.outSize != null){ totalOut += it.outSize; done++; }
+    });
+    box.style.display = 'flex';
+    var save = totalOut ? (1 - totalOut / totalOrig) * 100 : 0;
+    box.innerHTML =
+      '<div class="stat"><div class="k">共 ' + items.length + ' 张</div><div class="v">' + (done + '/' + items.length) + ' 已完成</div></div>' +
+      '<div class="stat"><div class="k">原图合计</div><div class="v">' + fmtSize(totalOrig) + '</div></div>' +
+      '<div class="stat"><div class="k">压缩后合计</div><div class="v">' + (done ? fmtSize(totalOut) : '—') + '</div></div>' +
+      '<div class="stat"><div class="k">总体节省</div><div class="v ' + (save>0?'save':'') + '">' + (done ? save.toFixed(1)+'%' : '—') + '</div></div>';
+  }
+
+  /* ============ 下载 ============ */
+  function downloadName(item){
+    var base = item.name.replace(/\.[^.]+$/, '');
+    return base + '_压缩.' + extOf($('format').value);
+  }
+  function downloadOne(item){
+    if(!item.outBlob) return;
+    var a = document.createElement('a');
+    a.href = item.outUrl;
+    a.download = downloadName(item);
+    a.click();
+  }
+  function downloadAll(){
+    var ready = items.filter(function(it){ return it.outBlob; });
+    if(!ready.length){ alert('还没有压缩完成的图片'); return; }
+    ready.forEach(function(it, i){
+      setTimeout(function(){ downloadOne(it); }, i * 400);
+    });
+  }
+
+  /* ============ 其他 ============ */
+  function removeItem(id){
+    var idx = -1;
+    items.forEach(function(it, i){ if(it.id === id) idx = i; });
+    if(idx >= 0){
+      URL.revokeObjectURL(items[idx].src);
+      if(items[idx].outUrl) URL.revokeObjectURL(items[idx].outUrl);
+      items.splice(idx, 1);
+    }
+    render();
+  }
+  function clearAll(){
+    items.forEach(function(it){
+      URL.revokeObjectURL(it.src);
+      if(it.outUrl) URL.revokeObjectURL(it.outUrl);
+    });
+    items = [];
+    render();
+  }
+
+  // 设置变更 → 重新压缩
+  var timer = null;
+  function scheduleRecompress(){
+    if(timer) clearTimeout(timer);
+    timer = setTimeout(recompressAll, 250);
+  }
+  $('quality').addEventListener('input', function(){ $('qVal').textContent = parseFloat(this.value).toFixed(2); scheduleRecompress(); });
+  $('format').addEventListener('change', scheduleRecompress);
+  $('maxW').addEventListener('input', scheduleRecompress);
+
+  window.downloadAll = downloadAll;
+  window.clearAll = clearAll;
+})();
+</script>
+</body>
+</html>

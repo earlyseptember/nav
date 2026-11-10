@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>倒计时器</title>
+<style>
+  :root{
+    --blue:#0F4C81;--blue2:#1A73E8;--blue-soft:#EAF1F8;
+    --bg:#F5F7FA;--text:#1F2937;--muted:#9AA4B2;
+    --border:#E4E9F0;--red:#E53935;--green:#27AE60;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+    background:var(--bg);color:var(--text);font-size:16px;min-height:100vh;
+    display:flex;align-items:center;justify-content:center;padding:24px;
+    transition:background .3s ease;
+  }
+
+  /* ===== 设置界面 ===== */
+  .setup{width:100%;max-width:560px;text-align:center;}
+  .title{font-size:18px;color:var(--muted);margin:0 0 24px;font-weight:500;}
+
+  .set{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;}
+  .set input{
+    width:76px;font-size:30px;font-weight:600;text-align:center;color:var(--blue);
+    padding:6px 4px;border:1px solid var(--border);border-radius:9px;background:#fff;
+    font-variant-numeric:tabular-nums;
+  }
+  .set input:focus{outline:none;border-color:var(--blue2);}
+  .set .sep{font-size:26px;color:var(--muted);}
+  .set .unit{font-size:13px;color:var(--muted);margin-top:2px;}
+
+  .presets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;}
+  .preset{
+    font-size:14px;padding:7px 16px;border-radius:999px;cursor:pointer;user-select:none;
+    background:#fff;color:#334155;border:1px solid var(--border);transition:all .15s ease;
+  }
+  .preset:hover{border-color:var(--blue2);color:var(--blue2);}
+
+  .sound-toggle{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:22px;font-size:14px;color:#334155;cursor:pointer;user-select:none;}
+  .sound-toggle input{width:17px;height:17px;accent-color:var(--blue);cursor:pointer;}
+
+  .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    font-size:16px;font-weight:600;padding:13px 30px;border-radius:10px;
+    border:1px solid transparent;cursor:pointer;transition:all .15s ease;line-height:1;white-space:nowrap;
+  }
+  .btn-start{background:var(--green);color:#fff;}
+  .btn-start:hover{background:#1E8A50;}
+  .btn-ghost{background:#fff;color:var(--blue);border-color:var(--blue);}
+  .btn-ghost:hover{background:var(--blue-soft);}
+
+  /* ===== 全屏倒计时 ===== */
+  .timer{display:none;text-align:center;}
+  .time{
+    font-size:clamp(110px, 26vw, 240px);
+    font-weight:700;line-height:1;color:#fff;
+    font-variant-numeric:tabular-nums;letter-spacing:4px;
+    transition:color .3s ease;
+  }
+  .time.warning{color:var(--red);animation:blink 1s ease-in-out infinite;}
+  .time.ended{color:var(--red);animation:blink .5s ease-in-out infinite;}
+  .time.counting{color:var(--red);}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.22;}}
+
+  /* 沉浸模式 */
+  body.immersive{background:#000;}
+  body.immersive .setup{display:none;}
+  body.immersive .timer{display:block;}
+
+  @media(max-width:640px){
+    .set input{width:62px;font-size:24px;}
+    .btn{padding:11px 20px;}
+  }
+</style>
+</head>
+<body>
+  <!-- 设置界面 -->
+  <div class="setup" id="setup">
+    <p class="title">倒计时器</p>
+    <div class="set">
+      <div><input type="number" id="inH" min="0" max="99" value="0"><div class="unit">小时</div></div>
+      <span class="sep">:</span>
+      <div><input type="number" id="inM" min="0" max="99" value="5"><div class="unit">分钟</div></div>
+      <span class="sep">:</span>
+      <div><input type="number" id="inS" min="0" max="99" value="0"><div class="unit">秒</div></div>
+    </div>
+    <div class="presets" id="presets">
+      <div class="preset" data-sec="60">1 分钟</div>
+      <div class="preset" data-sec="300">5 分钟</div>
+      <div class="preset" data-sec="600">10 分钟</div>
+      <div class="preset" data-sec="900">15 分钟</div>
+      <div class="preset" data-sec="2700">45 分钟</div>
+      <div class="preset" data-sec="3600">1 小时</div>
+    </div>
+    <label class="sound-toggle">
+      <input type="checkbox" id="soundToggle" checked>
+      结束时播放声音
+    </label>
+    <div class="btns">
+      <button class="btn btn-start" onclick="begin()">开始</button>
+      <button class="btn btn-ghost" onclick="resetTimer()">重置</button>
+    </div>
+  </div>
+
+  <!-- 全屏倒计时 -->
+  <div class="timer" id="timer">
+    <div class="time" id="display">00:00:00</div>
+  </div>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var display = $('display'), timerEl = $('timer');
+  var inH = $('inH'), inM = $('inM'), inS = $('inS');
+
+  var totalMs = 5 * 60 * 1000;
+  var remainMs = totalMs;
+  var state = 'idle';             // idle | running | counting(正计时)
+  var stepMs = 1000;              // 倒计时递减间隔（毫秒），默认 1 秒减 1
+  var lastStepAt = 0;
+  var countStart = 0, countMs = 0;
+  var timer = null, audioCtx = null;
+
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+  function format(ms){
+    var s = Math.max(0, Math.ceil(ms / 1000));
+    return pad(Math.floor(s/3600)) + ':' + pad(Math.floor((s%3600)/60)) + ':' + pad(s%60);
+  }
+  function readInputs(){
+    var h = Math.max(0, parseInt(inH.value,10)||0), m = Math.max(0, parseInt(inM.value,10)||0), s = Math.max(0, parseInt(inS.value,10)||0);
+    return (h*3600 + m*60 + s) * 1000;
+  }
+  function writeInputs(ms){
+    var s = Math.round(ms/1000);
+    inH.value = Math.floor(s/3600); inM.value = Math.floor((s%3600)/60); inS.value = s%60;
+  }
+
+  /* ---- 音效 ---- */
+  function ensureAudio(){
+    if(!audioCtx){ var AC = window.AudioContext || window.webkitAudioContext; if(AC) audioCtx = new AC(); }
+    if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  function beep(freq){
+    if(!audioCtx) return;
+    var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    o.type='sine'; o.frequency.value = freq || 880;
+    var t = audioCtx.currentTime;
+    g.gain.setValueAtTime(0.6, t); g.gain.exponentialRampToValueAtTime(0.001, t+0.4);
+    o.start(t); o.stop(t+0.4);
+  }
+
+  /* ---- 渲染 ---- */
+  function render(ms){
+    display.textContent = format(ms);
+    var last = state === 'running' && ms <= 10000 && ms > 0;
+    var cls = 'time';
+    if(state === 'counting') cls += ' counting';
+    else if(last) cls += ' warning';
+    display.className = cls;
+  }
+
+  /* ---- 沉浸模式 ---- */
+  function enterImmersive(){
+    document.body.classList.add('immersive');
+    var el = document.documentElement;
+    if(el.requestFullscreen){
+      var p = el.requestFullscreen();
+      if(p && p.catch) p.catch(function(){});
+    }
+  }
+  function exitImmersive(){
+    document.body.classList.remove('immersive');
+    if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+    resetTimer();
+  }
+
+  /* ---- 状态流转 ---- */
+  function begin(){
+    var ms = readInputs();
+    if(ms <= 0){ alert('请先设置大于 0 的时间'); return; }
+    totalMs = ms; remainMs = ms;
+    enterImmersive();
+    startTick();
+  }
+  function startTick(){
+    ensureAudio();
+    state = 'running';
+    lastStepAt = Date.now();
+    if(timer) clearInterval(timer);
+    timer = setInterval(stepTick, 50);
+    render(remainMs);
+  }
+  function stepTick(){
+    var now = Date.now();
+    if(now - lastStepAt >= stepMs){
+      lastStepAt = now;
+      remainMs -= 1000;
+      if(remainMs <= 0){ remainMs = 0; finish(); }
+      render(remainMs);
+    }
+  }
+  function setStep(ms){
+    stepMs = ms;
+    lastStepAt = Date.now();
+  }
+  function finish(){
+    clearInterval(timer); timer = null; remainMs = 0;
+    startCountUp();
+    if($('soundToggle').checked){
+      beep(880);
+      var start = Date.now();
+      var st = setInterval(function(){
+        if(Date.now() - start >= 10000){ clearInterval(st); return; }
+        beep(880);
+      }, 800);
+    }
+  }
+  function startCountUp(){
+    state = 'counting'; countMs = 0; countStart = Date.now();
+    if(timer) clearInterval(timer);
+    render(0);
+    timer = setInterval(function(){
+      countMs = Date.now() - countStart;
+      render(countMs);
+    }, 100);
+  }
+  function resetTimer(){
+    clearInterval(timer); timer = null; state = 'idle';
+    var ms = readInputs(); if(ms <= 0) ms = totalMs;
+    totalMs = ms; remainMs = ms;
+    display.textContent = format(ms);
+    display.className = 'time';
+  }
+
+  /* ---- 交互 ---- */
+  timerEl.addEventListener('click', function(){
+    if(state === 'counting'){ exitImmersive(); }
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      if(document.body.classList.contains('immersive')) exitImmersive();
+      return;
+    }
+    if(e.target.tagName === 'INPUT') return;
+    // 空格：idle 开始 / running 复原默认速度
+    if(e.code === 'Space'){
+      e.preventDefault();
+      if(state === 'idle'){ begin(); }
+      else if(state === 'running'){ setStep(1000); }
+      return;
+    }
+    if(state === 'running'){
+      var map = { m:1100, n:1200, b:1300, v:1050, c:900, x:800, z:700 };
+      var k = e.key.toLowerCase();
+      if(map[k] !== undefined){ e.preventDefault(); setStep(map[k]); }
+    }
+    else if(state === 'idle' && (e.key==='r'||e.key==='R')){ resetTimer(); }
+  });
+  document.addEventListener('fullscreenchange', function(){
+    if(!document.fullscreenElement && document.body.classList.contains('immersive')) exitImmersive();
+  });
+
+  [inH,inM,inS].forEach(function(inp){
+    inp.addEventListener('input', function(){ if(state==='idle'){ totalMs = readInputs(); } });
+  });
+  var presets = document.querySelectorAll('.preset');
+  for(var i=0;i<presets.length;i++){
+    presets[i].addEventListener('click', function(){
+      if(state !== 'idle') return;
+      totalMs = parseInt(this.getAttribute('data-sec'),10)*1000; remainMs = totalMs;
+      writeInputs(totalMs);
+    });
+  }
+
+  window.begin = begin; window.resetTimer = resetTimer;
+  resetTimer();
+})();
+</script>
+</body>
+</html>
