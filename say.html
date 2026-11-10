@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>名言警句 · 随机显示</title>
+<style>
+  :root{
+    --blue:#0F4C81;
+    --blue2:#1A73E8;
+    --blue-soft:#EAF1F8;
+    --bg:#F4F6FA;
+    --text:#1F2937;
+    --muted:#6B7280;
+    --border:#E4E9F0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;
+    background:var(--bg);color:var(--text);font-size:16px;line-height:1.6;min-height:100vh;
+    display:flex;align-items:center;justify-content:center;padding:20px;
+  }
+  .container{width:100%;max-width:760px;text-align:center;}
+
+  header{margin-bottom:26px;}
+  header h1{font-size:26px;margin:0 0 4px;color:var(--blue);letter-spacing:2px;display:flex;align-items:center;justify-content:center;gap:10px;}
+  header h1 .dot{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--blue);}
+  header p{margin:0;color:var(--muted);font-size:14px;}
+
+  /* 名言卡片 */
+  .quote-card{
+    position:relative;padding:52px 44px 44px;margin:0 auto 26px;
+    background:linear-gradient(150deg,#0F4C81 0%,#1B2A4A 100%);
+    border-radius:18px;box-shadow:0 8px 30px rgba(15,76,129,.28);color:#fff;text-align:center;
+    overflow:hidden;
+  }
+  .quote-card::before{
+    content:'\201C';position:absolute;top:4px;left:22px;
+    font-size:120px;line-height:1;color:rgba(255,255,255,.12);font-family:Georgia,serif;
+  }
+  .quote-text{
+    font-size:28px;font-weight:600;line-height:1.75;margin:0 0 22px;
+    word-break:break-word;position:relative;z-index:1;
+  }
+  .quote-text.fade{animation:rise .5s ease both;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .quote-author{font-size:17px;color:#CFE0F5;position:relative;z-index:1;}
+
+  .actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;justify-content:center;
+    font-size:16px;font-weight:600;padding:13px 30px;border-radius:10px;
+    border:1px solid transparent;cursor:pointer;transition:all .15s ease;
+    font-family:inherit;line-height:1;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--blue);color:#fff;}
+  .btn-primary:hover{background:var(--blue2);}
+  .btn-ghost{background:#fff;color:var(--blue);border-color:var(--blue);}
+  .btn-ghost:hover{background:var(--blue-soft);}
+
+  /* 控制区 */
+  .controls{
+    display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap;
+    margin-top:22px;font-size:14px;color:#334155;
+  }
+  .ctrl{display:flex;align-items:center;gap:8px;}
+  .switch{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider{
+    position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;
+    background:#CBD5E1;border-radius:22px;transition:.2s;
+  }
+  .slider::before{
+    content:"";position:absolute;height:16px;width:16px;left:3px;top:3px;
+    background:#fff;border-radius:50%;transition:.2s;
+  }
+  .switch input:checked + .slider{background:var(--blue2);}
+  .switch input:checked + .slider::before{transform:translateX(18px);}
+  .ctrl select{
+    font-size:14px;padding:5px 8px;border:1px solid var(--border);border-radius:8px;
+    background:#fff;color:var(--text);cursor:pointer;font-family:inherit;
+  }
+  .status-tip{margin-top:10px;font-size:12px;color:var(--muted);min-height:16px;}
+
+  /* 模拟点击波纹 */
+  .click-dot{
+    position:fixed;width:16px;height:16px;border-radius:50%;
+    background:rgba(26,115,232,.55);transform:translate(-50%,-50%);
+    pointer-events:none;z-index:9999;
+    animation:ping .6s ease-out forwards;
+  }
+  @keyframes ping{
+    from{box-shadow:0 0 0 0 rgba(26,115,232,.45);opacity:1;}
+    to{box-shadow:0 0 0 26px rgba(26,115,232,0);opacity:0;}
+  }
+
+  @media(max-width:560px){
+    .quote-card{padding:44px 28px 36px;}
+    .quote-text{font-size:23px;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1><span class="dot"></span>名言警句</h1>
+    <p>点一下，收获一句力量</p>
+  </header>
+
+  <div class="quote-card" id="card">
+    <div class="quote-text" id="quoteText"></div>
+    <div class="quote-author" id="quoteAuthor"></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="btnNext">↻ 换一句</button>
+    <button class="btn btn-ghost" id="btnCopy">复制</button>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl">
+      <label class="switch"><input type="checkbox" id="autoToggle" checked><span class="slider"></span></label>
+      <span>自动轮播</span>
+    </div>
+    <div class="ctrl">
+      <span>间隔</span>
+      <select id="intervalSel">
+        <option value="5000">5 秒</option>
+        <option value="10000" selected>10 秒</option>
+        <option value="30000">30 秒</option>
+      </select>
+    </div>
+    <div class="ctrl">
+      <label class="switch"><input type="checkbox" id="wakeToggle" checked><span class="slider"></span></label>
+      <span>防休眠</span>
+    </div>
+  </div>
+  <div class="status-tip" id="statusTip"></div>
+</div>
+
+<script>
+  var QUOTES = [
+    {t:"天行健，君子以自强不息。",a:"《周易》"},
+    {t:"宝剑锋从磨砺出，梅花香自苦寒来。",a:"《警世贤文》"},
+    {t:"锲而不舍，金石可镂。",a:"荀子"},
+    {t:"不积跬步，无以至千里；不积小流，无以成江海。",a:"荀子"},
+    {t:"世上无难事，只怕有心人。",a:"谚语"},
+    {t:"有志者，事竟成。",a:"《后汉书》"},
+    {t:"千里之行，始于足下。",a:"老子"},
+    {t:"滴水穿石，非一日之功。",a:"谚语"},
+    {t:"只要功夫深，铁杵磨成针。",a:"谚语"},
+    {t:"失败乃成功之母。",a:"谚语"},
+    {t:"千磨万击还坚劲，任尔东西南北风。",a:"郑燮"},
+    {t:"精诚所至，金石为开。",a:"《后汉书》"},
+    {t:"天生我材必有用。",a:"李白"},
+    {t:"不鸣则已，一鸣惊人。",a:"《史记》"},
+    {t:"志当存高远。",a:"诸葛亮"},
+    {t:"穷且益坚，不坠青云之志。",a:"王勃"},
+    {t:"学而时习之，不亦说乎。",a:"孔子"},
+    {t:"知之者不如好之者，好之者不如乐之者。",a:"孔子"},
+    {t:"敏而好学，不耻下问。",a:"孔子"},
+    {t:"书山有路勤为径，学海无涯苦作舟。",a:"韩愈"},
+    {t:"读书破万卷，下笔如有神。",a:"杜甫"},
+    {t:"问渠那得清如许？为有源头活水来。",a:"朱熹"},
+    {t:"黑发不知勤学早，白首方悔读书迟。",a:"颜真卿"},
+    {t:"少壮不努力，老大徒伤悲。",a:"《长歌行》"},
+    {t:"业精于勤，荒于嬉。",a:"韩愈"},
+    {t:"温故而知新，可以为师矣。",a:"孔子"},
+    {t:"学而不思则罔，思而不学则殆。",a:"孔子"},
+    {t:"三人行，必有我师焉。",a:"孔子"},
+    {t:"玉不琢，不成器；人不学，不知义。",a:"《礼记》"},
+    {t:"书籍是人类进步的阶梯。",a:"高尔基"},
+    {t:"知识就是力量。",a:"培根"},
+    {t:"读书有三到，谓心到、眼到、口到。",a:"朱熹"},
+    {t:"读万卷书，行万里路。",a:"董其昌"},
+    {t:"学然后知不足，教然后知困。",a:"《礼记》"},
+    {t:"一寸光阴一寸金，寸金难买寸光阴。",a:"谚语"},
+    {t:"莫等闲，白了少年头，空悲切。",a:"岳飞"},
+    {t:"逝者如斯夫，不舍昼夜。",a:"孔子"},
+    {t:"时间就像海绵里的水，只要愿挤，总还是有的。",a:"鲁迅"},
+    {t:"明日复明日，明日何其多。",a:"《明日歌》"},
+    {t:"盛年不重来，一日难再晨。",a:"陶渊明"},
+    {t:"花有重开日，人无再少年。",a:"谚语"},
+    {t:"少年易老学难成，一寸光阴不可轻。",a:"朱熹"},
+    {t:"路漫漫其修远兮，吾将上下而求索。",a:"屈原"},
+    {t:"生于忧患，死于安乐。",a:"孟子"},
+    {t:"天将降大任于斯人也，必先苦其心志，劳其筋骨。",a:"孟子"},
+    {t:"先天下之忧而忧，后天下之乐而乐。",a:"范仲淹"},
+    {t:"会当凌绝顶，一览众山小。",a:"杜甫"},
+    {t:"长风破浪会有时，直挂云帆济沧海。",a:"李白"},
+    {t:"不经一番寒彻骨，怎得梅花扑鼻香。",a:"黄蘖禅师"},
+    {t:"山重水复疑无路，柳暗花明又一村。",a:"陆游"},
+    {t:"沉舟侧畔千帆过，病树前头万木春。",a:"刘禹锡"},
+    {t:"海内存知己，天涯若比邻。",a:"王勃"},
+    {t:"人生自古谁无死，留取丹心照汗青。",a:"文天祥"},
+    {t:"天下兴亡，匹夫有责。",a:"顾炎武"},
+    {t:"老骥伏枥，志在千里。",a:"曹操"},
+    {t:"世界以痛吻我，要我报之以歌。",a:"泰戈尔"},
+    {t:"如果冬天来了，春天还会远吗？",a:"雪莱"},
+    {t:"生命不止，奋斗不息。",a:"卡莱尔"},
+    {t:"人的天职在勇于探索真理。",a:"哥白尼"},
+    {t:"人生最曼妙的风景，竟是内心的淡定与从容。",a:"杨绛"},
+    {t:"地上本没有路，走的人多了，也便成了路。",a:"鲁迅"},
+    {t:"己所不欲，勿施于人。",a:"孔子"},
+    {t:"勿以恶小而为之，勿以善小而不为。",a:"刘备"},
+    {t:"静以修身，俭以养德。",a:"诸葛亮"},
+    {t:"非淡泊无以明志，非宁静无以致远。",a:"诸葛亮"},
+    {t:"君子坦荡荡，小人长戚戚。",a:"孔子"},
+    {t:"见贤思齐焉，见不贤而内自省也。",a:"孔子"},
+    {t:"吾日三省吾身。",a:"曾子"},
+    {t:"满招损，谦受益。",a:"《尚书》"},
+    {t:"虚心使人进步，骄傲使人落后。",a:"毛泽东"},
+    {t:"人而无信，不知其可也。",a:"孔子"},
+    {t:"为中华之崛起而读书。",a:"周恩来"},
+    {t:"少年强则国强。",a:"梁启超"},
+    {t:"青春须早为，岂能长少年。",a:"孟郊"},
+    {t:"天才就是百分之一的灵感加上百分之九十九的汗水。",a:"爱迪生"},
+    {t:"成功＝艰苦劳动＋正确方法＋少说空话。",a:"爱因斯坦"},
+    {t:"十年树木，百年树人。",a:"《管子》"},
+    {t:"师者，所以传道受业解惑也。",a:"韩愈"},
+    {t:"学高为师，身正为范。",a:"陶行知"},
+    {t:"捧着一颗心来，不带半根草去。",a:"陶行知"},
+    {t:"授人以鱼，不如授人以渔。",a:"谚语"},
+    {t:"兴趣是最好的老师。",a:"爱因斯坦"},
+    {t:"落红不是无情物，化作春泥更护花。",a:"龚自珍"},
+    {t:"纸上得来终觉浅，绝知此事要躬行。",a:"陆游"},
+    {t:"梅须逊雪三分白，雪却输梅一段香。",a:"卢梅坡"},
+    {t:"不畏浮云遮望眼，自缘身在最高层。",a:"王安石"},
+    {t:"欲穷千里目，更上一层楼。",a:"王之涣"},
+    {t:"横看成岭侧成峰，远近高低各不同。",a:"苏轼"},
+    {t:"不识庐山真面目，只缘身在此山中。",a:"苏轼"},
+    {t:"众里寻他千百度，蓦然回首，那人却在灯火阑珊处。",a:"辛弃疾"},
+    {t:"春蚕到死丝方尽，蜡炬成灰泪始干。",a:"李商隐"},
+    {t:"海阔凭鱼跃，天高任鸟飞。",a:"谚语"},
+    {t:"乾坤未定，你我皆是黑马。",a:"网络流行语"},
+    {t:"星光不问赶路人，时光不负有心人。",a:"网络流行语"},
+    {t:"愿你走出半生，归来仍是少年。",a:"网络流行语"},
+    {t:"以梦为马，不负韶华。",a:"网络流行语"},
+    {t:"越努力，越幸运。",a:"网络流行语"},
+    {t:"没有伞的孩子，必须努力奔跑。",a:"网络流行语"},
+    {t:"未来的你，一定会感谢现在拼命努力的自己。",a:"网络流行语"},
+    {t:"人生没有白走的路，每一步都算数。",a:"网络流行语"},
+    {t:"所有的横空出世，都是厚积薄发。",a:"网络流行语"},
+    {t:"你有多努力，就有多特殊。",a:"网络流行语"},
+    {t:"世界不会辜负每一份努力和坚持。",a:"网络流行语"},
+    {t:"梦想还是要有的，万一实现了呢。",a:"马云"},
+    {t:"不要因为走得太远，而忘记为什么出发。",a:"网络流行语"},
+    {t:"坚持的路上并不拥挤，因为坚持的人不多。",a:"网络流行语"},
+    {t:"每一个不曾起舞的日子，都是对生命的辜负。",a:"尼采"},
+    {t:"心若向阳，无畏悲伤。",a:"网络流行语"},
+    {t:"生活不是等待暴风雨过去，而是学会在雨中跳舞。",a:"网络流行语"},
+    {t:"没有过不去的坎，只有过不去的心。",a:"网络流行语"},
+    {t:"每天进步一点点，终会遇见更好的自己。",a:"网络流行语"},
+    {t:"最好的投资，就是投资自己。",a:"网络流行语"},
+    {t:"你读过的书，走过的路，都会成为你的格局。",a:"网络流行语"},
+    {t:"成长就是把哭声调成静音的过程。",a:"网络流行语"},
+    {t:"自律的程度，决定你人生的高度。",a:"网络流行语"},
+    {t:"与其羡慕别人，不如提升自己。",a:"网络流行语"},
+    {t:"学习是最低成本的自我增值方式。",a:"网络流行语"},
+    {t:"人生没有彩排，每一天都是现场直播。",a:"网络流行语"},
+    {t:"你若盛开，蝴蝶自来；你若精彩，天自安排。",a:"网络流行语"},
+    {t:"所有的光芒，都需要时间才能被看到。",a:"网络流行语"},
+    {t:"生活不会辜负每一个努力的人。",a:"网络流行语"},
+    {t:"没有比脚更长的路，没有比人更高的山。",a:"汪国真"},
+    {t:"既然选择了远方，便只顾风雨兼程。",a:"汪国真"},
+    {t:"大鹏一日同风起，扶摇直上九万里。",a:"李白"},
+    {t:"流水不争先，争的是滔滔不绝。",a:"网络流行语"},
+    {t:"努力到无能为力，拼搏到感动自己。",a:"网络流行语"},
+    {t:"别在最能吃苦的年纪选择安逸。",a:"网络流行语"},
+    {t:"你的坚持，终将美好。",a:"网络流行语"},
+    {t:"眼里有光，心中有梦。",a:"网络流行语"},
+    {t:"保持热爱，奔赴山海。",a:"网络流行语"},
+    {t:"心之所向，素履以往。",a:"网络流行语"},
+    {t:"生如逆旅，一苇以航。",a:"网络流行语"},
+    {t:"人间值得。",a:"网络流行语"},
+    {t:"万事胜意。",a:"网络流行语"},
+    {t:"生活明朗，万物可爱。",a:"网络流行语"},
+    {t:"人间烟火气，最抚凡人心。",a:"网络流行语"},
+    {t:"爱自己是终身浪漫的开始。",a:"王尔德"},
+    {t:"拒绝精神内耗，拥抱快乐人生。",a:"网络流行语"},
+    {t:"每一个努力的背后，必有加倍的赏赐。",a:"网络流行语"},
+    {t:"努力的意义，就是让未来的自己感谢现在的自己。",a:"网络流行语"},
+    {t:"你现在的努力，是为了以后有更多选择的权利。",a:"网络流行语"},
+    {t:"只要路是对的，就不怕路远。",a:"网络流行语"},
+    {t:"把期望降到最低，所有遇见都是礼物。",a:"网络流行语"},
+    {t:"低谷时修炼沉潜，高峰时保持清醒。",a:"网络流行语"},
+    {t:"真正的强大不是对抗，而是允许一切发生。",a:"网络流行语"},
+    {t:"心可以碎，手不能停。",a:"网络流行语"},
+    {t:"不必行色匆匆，不必光芒四射，允许自己缓慢而坚定地成长。",a:"网络流行语"},
+    {t:"外界的声音只是参考，你不开心就不必听。",a:"网络流行语"},
+    {t:"心态决定状态，状态决定成败。",a:"网络流行语"},
+    {t:"抱怨是弱者的借口，行动是强者的选择。",a:"网络流行语"},
+    {t:"心态对了，人生就顺了。",a:"网络流行语"},
+    {t:"学会放下，才能轻装前行。",a:"网络流行语"},
+    {t:"看透生活的本质，依然热爱生活。",a:"罗曼·罗兰"},
+    {t:"成熟不是年龄的增长，而是心态的平和。",a:"网络流行语"},
+    {t:"人生最大的财富，是健康和平安。",a:"网络流行语"},
+    {t:"善良是一种选择，也是一种智慧。",a:"网络流行语"},
+    {t:"你要悄悄努力，然后惊艳所有人。",a:"网络流行语"},
+    {t:"哪有什么岁月静好，不过是有人替你负重前行。",a:"网络流行语"},
+    {t:"有些路很远，走下去会很累，可是不走会后悔。",a:"网络流行语"},
+    {t:"纵有疾风起，人生不言弃。",a:"网络流行语"},
+    {t:"逆风的方向，更适合飞翔。",a:"五月天"},
+    {t:"我不怕千万人阻挡，只怕自己投降。",a:"五月天"},
+    {t:"一切都是最好的安排。",a:"网络流行语"},
+    {t:"慢慢来，比较快。",a:"网络流行语"},
+    {t:"站在自己热爱的世界里，闪闪发光。",a:"网络流行语"},
+    {t:"奥利给！",a:"网络梗"},
+    {t:"干就完了。",a:"网络梗"},
+    {t:"今天也要加油鸭。",a:"网络梗"},
+    {t:"冲鸭！",a:"网络梗"},
+    {t:"猥琐发育，别浪。",a:"网络梗"},
+    {t:"打工人，打工魂，打工都是人上人。",a:"网络梗"},
+    {t:"拒绝摆烂，拒绝躺平。",a:"网络梗"},
+    {t:"先活着，剩下的事等吃完这顿再说。",a:"网络梗"},
+    {t:"努力不一定成功，但不努力一定很轻松。",a:"网友"},
+    {t:"世上无难事，只要肯放弃。",a:"网友"},
+    {t:"生活不止眼前的苟且，还有读不懂的诗和到不了的远方。",a:"网友"},
+    {t:"假如生活欺骗了你，不要悲伤，明天它还会继续骗你。",a:"网友"},
+    {t:"条条大路通罗马，但有些人就生在罗马。",a:"网友"},
+    {t:"咸鱼翻身，还是咸鱼。",a:"网友"},
+    {t:"今天不努力，明天就休息。",a:"网友"},
+  ];
+
+  var textEl = document.getElementById('quoteText');
+  var authorEl = document.getElementById('quoteAuthor');
+  var lastIdx = -1;
+
+  function pick(){
+    var idx;
+    do{ idx = Math.floor(Math.random() * QUOTES.length); }
+    while(idx === lastIdx && QUOTES.length > 1);
+    lastIdx = idx;
+    return QUOTES[idx];
+  }
+
+  function show(){
+    var q = pick();
+    textEl.textContent = q.t;
+    authorEl.textContent = '—— ' + q.a;
+    textEl.classList.remove('fade');
+    void textEl.offsetWidth;
+    textEl.classList.add('fade');
+  }
+
+  document.getElementById('btnNext').addEventListener('click', show);
+  document.getElementById('btnCopy').addEventListener('click', function(){
+    var txt = textEl.textContent + ' ' + authorEl.textContent;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){
+        this.textContent = '已复制 ✓';
+        var self = this;
+        setTimeout(function(){ self.textContent = '复制'; }, 1200);
+      }.bind(this)).catch(function(){ fallback(); });
+    } else {
+      fallback();
+    }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      this.textContent = '已复制 ✓';
+      var self = this;
+      setTimeout(function(){ self.textContent = '复制'; }, 1200);
+    }
+  });
+
+  // ---- 自动轮播 ----
+  var autoTimer = null;
+  function applyAuto(){
+    if(autoTimer){ clearInterval(autoTimer); autoTimer = null; }
+    if(document.getElementById('autoToggle').checked){
+      var ms = parseInt(document.getElementById('intervalSel').value, 10);
+      autoTimer = setInterval(show, ms);
+    }
+  }
+  document.getElementById('autoToggle').addEventListener('change', applyAuto);
+  document.getElementById('intervalSel').addEventListener('change', applyAuto);
+
+  // ---- 防休眠（Wake Lock API）----
+  var wakeLock = null;
+  function setTip(msg){ document.getElementById('statusTip').textContent = msg; }
+  function releaseWake(){
+    if(wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; }
+  }
+  async function applyWake(){
+    var on = document.getElementById('wakeToggle').checked;
+    if(!on){ releaseWake(); setTip(''); return; }
+    if(!('wakeLock' in navigator)){
+      setTip('当前环境不支持防休眠（需用 Chrome/Edge 的 HTTPS 或 localhost 打开）');
+      return;
+    }
+    try{
+      wakeLock = await navigator.wakeLock.request('screen');
+      setTip('防休眠已开启');
+      wakeLock.addEventListener('release', function(){
+        wakeLock = null;
+        if(document.getElementById('wakeToggle').checked){
+          setTip('防休眠已释放（切后台/锁屏会自动释放，回到页面将自动恢复）');
+        }
+      });
+    }catch(e){
+      setTip('防休眠开启失败：' + e.message);
+    }
+  }
+  document.getElementById('wakeToggle').addEventListener('change', applyWake);
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden && document.getElementById('wakeToggle').checked){ applyWake(); }
+  });
+
+  // ---- 模拟点击波纹（随机位置闪现，营造活动感）----
+  function simulateClick(){
+    var dot = document.createElement('div');
+    dot.className = 'click-dot';
+    dot.style.left = (10 + Math.random()*80) + 'vw';
+    dot.style.top = (10 + Math.random()*80) + 'vh';
+    document.body.appendChild(dot);
+    setTimeout(function(){ if(dot.parentNode) dot.parentNode.removeChild(dot); }, 650);
+  }
+  setInterval(simulateClick, 30000);
+
+  show();
+  applyAuto();
+  applyWake();
+</script>
+</body>
+</html>

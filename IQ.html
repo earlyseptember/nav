@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>瑞文标准推理测验（SPM 结构 · 60 题）</title>
+<style>
+  :root{
+    --blue:#1e3a5f;
+    --blue2:#2563eb;
+    --blue-soft:#e8f0fe;
+    --ink:#1f2937;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --bg:#f5f7fa;
+    --card:#ffffff;
+    --warn:#dc2626;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:16px;}
+
+  /* 首页 */
+  .home-card{background:var(--card);border-radius:16px;box-shadow:0 8px 30px rgba(30,58,95,.08);padding:32px 24px;margin-top:24px;text-align:center;}
+  .home-card h1{font-size:26px;margin:0 0 4px;color:var(--blue);}
+  .home-card .sub{color:var(--muted);font-size:14px;margin:0 0 20px;}
+  .badge-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+  .badge{background:var(--blue-soft);color:var(--blue);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;}
+  .intro{text-align:left;font-size:14px;color:#374151;margin:0 auto 22px;max-width:540px;}
+  .intro li{margin:4px 0;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:12px;cursor:pointer;font-size:16px;font-weight:600;padding:13px 28px;transition:.15s;}
+  .btn-primary{background:var(--blue2);color:#fff;}
+  .btn-primary:hover{background:#1d4ed8;}
+  .btn-ghost{background:#fff;color:var(--blue);border:1px solid var(--blue2);}
+  .btn-ghost:hover{background:var(--blue-soft);}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+  .note{font-size:12px;color:var(--muted);margin-top:16px;}
+
+  /* 答题页 */
+  #screen-quiz{display:none;}
+  .topbar{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;align-items:center;gap:12px;}
+  .topbar .qnum{font-weight:700;color:var(--blue);font-size:15px;white-space:nowrap;}
+  .set-tag{font-size:12px;font-weight:700;color:#fff;background:var(--blue);border-radius:6px;padding:2px 8px;white-space:nowrap;}
+  .prog{flex:1;height:8px;background:#eef1f5;border-radius:4px;overflow:hidden;}
+  .prog i{display:block;height:100%;background:var(--blue2);border-radius:4px;transition:width .2s;}
+  .timer{font-variant-numeric:tabular-nums;font-weight:700;color:var(--ink);font-size:15px;white-space:nowrap;min-width:52px;text-align:right;}
+  .timer.warn{color:var(--warn);}
+
+  .quiz-body{padding:16px;}
+  .qcard{background:var(--card);border-radius:16px;box-shadow:0 4px 20px rgba(30,58,95,.06);padding:20px;margin-bottom:16px;}
+  .qtitle{font-size:15px;font-weight:700;color:var(--blue);margin:0 0 14px;}
+  .matrix{display:grid;gap:6px;max-width:460px;margin:0 auto;}
+  .matrix.m2{grid-template-columns:repeat(2,1fr);max-width:360px;}
+  .matrix.m3{grid-template-columns:repeat(3,1fr);}
+  .cell{background:#fbfcfe;border:1px solid var(--line);border-radius:8px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+  .cell svg{width:100%;height:100%;display:block;}
+  .cell.blank{background:var(--blue-soft);border-color:var(--blue2);}
+  .cell .qmark{font-size:34px;font-weight:700;color:var(--blue2);}
+
+  .opt-label{font-size:15px;font-weight:700;color:var(--blue);margin:18px 0 10px;}
+  .options{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .opt{background:#fff;border:2px solid var(--line);border-radius:12px;cursor:pointer;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:.12s;position:relative;}
+  .opt:hover{border-color:#b9cdf0;}
+  .opt .letter{font-size:12px;font-weight:700;color:var(--muted);width:22px;height:22px;border-radius:50%;background:#f1f4f8;display:flex;align-items:center;justify-content:center;}
+  .opt svg{width:72px;height:72px;display:block;}
+  .opt.sel{border-color:var(--blue2);background:var(--blue-soft);}
+  .opt.sel .letter{background:var(--blue2);color:#fff;}
+
+  .nav-row{display:flex;gap:10px;margin-top:18px;}
+  .nav-row .btn{flex:1;padding:12px;}
+  .nav-row .btn-prev{flex:0 0 92px;}
+
+  /* 答题卡 */
+  #sheet-mask{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:40;align-items:center;justify-content:center;padding:20px;}
+  #sheet-mask.show{display:flex;}
+  .sheet{background:#fff;border-radius:16px;max-width:480px;width:100%;padding:22px;max-height:80vh;overflow:auto;}
+  .sheet h3{margin:0 0 12px;color:var(--blue);font-size:18px;}
+  .sheet-legend{font-size:12px;color:var(--muted);margin-bottom:10px;}
+  .sheet-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;}
+  .sheet-grid button{aspect-ratio:1;border:1px solid var(--line);border-radius:6px;background:#fff;font-size:11px;cursor:pointer;color:var(--ink);padding:0;}
+  .sheet-grid button.done{background:var(--blue2);color:#fff;border-color:var(--blue2);}
+  .sheet-grid button.cur{outline:2px solid var(--blue2);outline-offset:1px;}
+  .sheet .sheet-close{margin-top:16px;width:100%;}
+
+  /* 结果页 */
+  #screen-result{display:none;}
+  .res-card{background:var(--card);border-radius:16px;box-shadow:0 8px 30px rgba(30,58,95,.08);padding:32px 24px;margin-top:24px;text-align:center;}
+  .res-card h2{margin:0;font-size:20px;color:var(--blue);}
+  .iq-num{font-size:88px;font-weight:800;color:var(--blue2);line-height:1;margin:14px 0 4px;font-variant-numeric:tabular-nums;}
+  .iq-level{display:inline-block;padding:8px 22px;border-radius:22px;font-size:17px;font-weight:700;color:#fff;background:var(--blue2);margin:6px 0 14px;}
+  .stat-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+  .stat{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:90px;}
+  .stat .v{font-size:18px;font-weight:700;color:var(--ink);}
+  .stat .k{font-size:12px;color:var(--muted);}
+  .set-scores{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
+  .set-score{background:#f1f5fb;border-radius:8px;padding:6px 12px;font-size:13px;color:#334155;}
+  .set-score b{color:var(--blue);}
+  .dist{max-width:460px;margin:0 auto 18px;}
+  .dist svg{width:100%;height:auto;display:block;}
+  .res-note{font-size:12px;color:var(--muted);text-align:left;background:#f8fafc;border-radius:10px;padding:12px;margin:0 0 20px;}
+  .res-btns{display:flex;gap:10px;justify-content:center;}
+
+  @media(max-width:480px){
+    .options{grid-template-columns:repeat(2,1fr);}
+    .opt svg{width:64px;height:64px;}
+    .iq-num{font-size:72px;}
+    .home-card h1{font-size:22px;}
+    .sheet-grid{grid-template-columns:repeat(6,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <pattern id="stripe" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="7" height="7" fill="#ffffff"/>
+      <line x1="0" y1="0" x2="0" y2="7" stroke="#34495e" stroke-width="2.4"/>
+    </pattern>
+  </defs>
+</svg>
+
+<div id="screen-home" class="wrap">
+  <div class="home-card">
+    <h1>瑞文标准推理测验</h1>
+    <p class="sub">Raven's Standard Progressive Matrices（结构版）</p>
+    <div class="badge-row">
+      <span class="badge">60 题 · 5 组</span>
+      <span class="badge">约 20–40 分钟</span>
+      <span class="badge">即时出分</span>
+    </div>
+    <ul class="intro">
+      <li><b>结构</b>：A、B、C、D、E 五组，每组 12 题，难度逐组递增；A/B 组每题 6 个选项，C/D/E 组 8 个选项。</li>
+      <li><b>题型</b>：非文字图形矩阵推理——找出图形规律，选出缺失的一块。跨文化公平，不依赖语言文字。</li>
+      <li><b>计分</b>：每对 1 题 1 分，满分 60，按正态分布（均值 100、标准差 15）换算 IQ。</li>
+      <li><b>提醒</b>：保持专注、独立作答，凭第一直觉判断，不要查资料。</li>
+    </ul>
+    <button class="btn btn-primary" id="btnStart">开始测试</button>
+    <p class="note">本工具为按 SPM 结构原创的图形推理题（原题受版权保护），分数为参考值，非专业临床量表结果。</p>
+  </div>
+</div>
+
+<div id="screen-quiz">
+  <div class="topbar">
+    <span class="set-tag" id="setTag">A</span>
+    <span class="qnum" id="qnum">1 / 60</span>
+    <div class="prog"><i id="progBar"></i></div>
+    <span class="timer" id="timer">00:00</span>
+    <button class="btn btn-ghost" id="btnSheet" style="padding:6px 12px;font-size:13px;">答题卡</button>
+  </div>
+  <div class="quiz-body wrap" style="max-width:760px;">
+    <div class="qcard">
+      <p class="qtitle" id="qtitle">选择缺失的图形</p>
+      <div class="matrix" id="matrix"></div>
+      <p class="opt-label">请选择缺失的图形</p>
+      <div class="options" id="options"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-ghost btn-prev" id="btnPrev">上一题</button>
+      <button class="btn btn-primary" id="btnNext">下一题</button>
+    </div>
+  </div>
+</div>
+
+<div id="sheet-mask">
+  <div class="sheet">
+    <h3>答题卡</h3>
+    <p class="sheet-legend">A(1-12) B(13-24) C(25-36) D(37-48) E(49-60)</p>
+    <div class="sheet-grid" id="sheetGrid"></div>
+    <button class="btn btn-ghost sheet-close" id="btnSheetClose">关闭</button>
+  </div>
+</div>
+
+<div id="screen-result" class="wrap">
+  <div class="res-card">
+    <h2>测试完成</h2>
+    <div class="iq-num" id="iqNum">--</div>
+    <div class="iq-level" id="iqLevel">--</div>
+    <div class="stat-row">
+      <div class="stat"><div class="v" id="stCorrect">--</div><div class="k">答对</div></div>
+      <div class="stat"><div class="v" id="stPercent">--</div><div class="k">百分位</div></div>
+      <div class="stat"><div class="v" id="stTime">--</div><div class="k">用时</div></div>
+    </div>
+    <div class="set-scores" id="setScores"></div>
+    <div class="dist"><div id="distBox"></div></div>
+    <div class="res-note" id="resNote"></div>
+    <div class="res-btns">
+      <button class="btn btn-primary" id="btnRetry">重新测试</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   瑞文标准推理测验（SPM 结构 · 60 题 · 5 组）
+   题目为按 Raven SPM 结构原创生成（原题受版权保护）
+   ============================================================ */
+
+/* ===== DATA GEN START ===== */
+var COLOR = '#34495e';
+var LETTERS = ['a','b','c','d','e','f','g','h'];
+var NEXT_KIND = {circle:'square', square:'triangle', triangle:'circle'};
+var SHAPES = ['circle','square','triangle'];
+var FILLS = ['solid','hollow','stripe'];
+var LATIN = [[0,1,2],[1,2,0],[2,0,1]];
+
+/* ---------- 渲染 ---------- */
+function fillAttr(fill){
+  if(fill === 'solid') return 'fill="'+COLOR+'" stroke="'+COLOR+'"';
+  if(fill === 'hollow') return 'fill="#ffffff" stroke="'+COLOR+'"';
+  return 'fill="url(#stripe)" stroke="'+COLOR+'"';
+}
+function svgShape(sh){
+  var sw = sh.k === 'arrow' ? 5 : 2.5;
+  var tr = sh.rot ? ' transform="rotate('+sh.rot+' '+(sh.cx||50)+' '+(sh.cy||50)+')"' : '';
+  if(sh.k === 'circle'){
+    return '<circle cx="'+sh.cx+'" cy="'+sh.cy+'" r="'+sh.r+'" '+fillAttr(sh.fill||'solid')+' stroke-width="'+sw+'"'+tr+'/>';
+  }
+  if(sh.k === 'square'){
+    var x = sh.cx - sh.r, y = sh.cy - sh.r;
+    return '<rect x="'+x+'" y="'+y+'" width="'+(sh.r*2)+'" height="'+(sh.r*2)+'" '+fillAttr(sh.fill||'solid')+' stroke-width="'+sw+'"'+tr+'/>';
+  }
+  if(sh.k === 'triangle'){
+    var a = sh.cx, b = sh.cy, r = sh.r;
+    var p1 = a+','+(b-r), p2 = (a-r*0.866)+','+(b+r*0.5), p3 = (a+r*0.866)+','+(b+r*0.5);
+    return '<polygon points="'+p1+' '+p2+' '+p3+'" '+fillAttr(sh.fill||'solid')+' stroke-width="'+sw+'" stroke-linejoin="round"'+tr+'/>';
+  }
+  if(sh.k === 'bar'){
+    return '<rect x="'+sh.x+'" y="'+sh.y+'" width="'+sh.w+'" height="'+sh.h+'" '+fillAttr(sh.fill||'solid')+' stroke-width="2"'+tr+'/>';
+  }
+  if(sh.k === 'arrow'){
+    var L = sh.r;
+    return '<g'+tr+'>'
+      + '<line x1="'+(sh.cx-L)+'" y1="'+sh.cy+'" x2="'+(sh.cx+L*0.55)+'" y2="'+sh.cy+'" stroke="'+COLOR+'" stroke-width="6" stroke-linecap="round"/>'
+      + '<polygon points="'+(sh.cx+L*0.55)+','+sh.cy+' '+(sh.cx+L*0.55-12)+','+(sh.cy-10)+' '+(sh.cx+L*0.55-12)+','+(sh.cy+10)+'" fill="'+COLOR+'"/>'
+      + '</g>';
+  }
+  return '';
+}
+function cellSVG(shapes){
+  var inner = shapes.map(svgShape).join('');
+  return '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">'+inner+'</svg>';
+}
+
+/* ---------- 伪随机 ---------- */
+function mulberry32(seed){
+  return function(){
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function shuffle(arr, rnd){
+  for(var i=arr.length-1;i>0;i--){ var j=Math.floor(rnd()*(i+1)); var t=arr[i];arr[i]=arr[j];arr[j]=t; }
+  return arr;
+}
+
+/* ---------- 通用选项构建（去重保证答案唯一） ---------- */
+function buildOptions(correct, pool, N, rnd){
+  var seen = {}; seen[cellSVG(correct)] = true;
+  var opts = [correct];
+  for(var i=0;i<pool.length && opts.length<N;i++){
+    var k = cellSVG(pool[i]);
+    if(!seen[k]){ seen[k] = true; opts.push(pool[i]); }
+  }
+  while(opts.length < N){ opts.push([]); }
+  shuffle(opts, rnd);
+  return { options: opts, answer: opts.indexOf(correct) };
+}
+
+/* ============ A 组：图形补全（对称变换，知觉辨别） ============ */
+var BASE_A = [
+  [{k:'bar',x:55,y:25,w:18,h:45},{k:'bar',x:55,y:50,w:40,h:18}],
+  [{k:'bar',x:27,y:25,w:18,h:45},{k:'bar',x:27,y:25,w:40,h:18}],
+  [{k:'triangle',cx:45,cy:40,r:26},{k:'circle',cx:58,cy:62,r:9}],
+  [{k:'square',cx:40,cy:42,r:24},{k:'square',cx:66,cy:28,r:12}],
+  [{k:'bar',x:25,y:35,w:45,h:15},{k:'bar',x:25,y:58,w:28,h:15}],
+  [{k:'circle',cx:52,cy:52,r:22},{k:'square',cx:30,cy:28,r:12}],
+  [{k:'bar',x:50,y:22,w:16,h:56},{k:'bar',x:25,y:22,w:25,h:14},{k:'bar',x:25,y:44,w:25,h:14}],
+  [{k:'triangle',cx:44,cy:38,r:28},{k:'bar',x:28,y:66,w:44,h:14}],
+  [{k:'triangle',cx:40,cy:38,r:22},{k:'circle',cx:62,cy:58,r:10},{k:'bar',x:25,y:68,w:30,h:12}],
+  [{k:'circle',cx:40,cy:40,r:20},{k:'triangle',cx:66,cy:58,r:18},{k:'bar',x:30,y:70,w:40,h:12}],
+  [{k:'square',cx:45,cy:40,r:20},{k:'bar',x:22,y:50,w:14,h:32},{k:'circle',cx:66,cy:66,r:8}],
+  [{k:'triangle',cx:42,cy:36,r:24},{k:'bar',x:30,y:62,w:40,h:13},{k:'square',cx:68,cy:30,r:11}]
+];
+var TRANS = ['id','flipH','flipV','rot180'];
+function transform(shapes, t){
+  return shapes.map(function(s){
+    var n = {}; for(var k in s) n[k] = s[k];
+    if(t === 'flipH'){ if(s.k==='bar') n.x = 100 - s.x - s.w; else n.cx = 100 - s.cx; }
+    else if(t === 'flipV'){ if(s.k==='bar') n.y = 100 - s.y - s.h; else n.cy = 100 - s.cy; }
+    else if(t === 'rot180'){ if(s.k==='bar'){ n.x = 100 - s.x - s.w; n.y = 100 - s.y - s.h; } else { n.cx = 100 - s.cx; n.cy = 100 - s.cy; } }
+    return n;
+  });
+}
+function genSetA(q){
+  var rnd = mulberry32(11000 + q);
+  var base = BASE_A[(q-1) % 12];
+  var blank = (q-1) % 4;
+  var correct = transform(base, TRANS[blank]);
+  var grid = TRANS.map(function(t){ return transform(base, t); });
+  var pool = [];
+  TRANS.forEach(function(t, i){ if(i !== blank) pool.push(transform(base, t)); });
+  pool.push(base.map(function(s){ var n={};for(var k in s)n[k]=s[k];return n; }).concat([{k:'circle',cx:72,cy:72,r:8}]));
+  var shifted = correct.map(function(s){ var n={};for(var k in s)n[k]=s[k]; if(s.k==='bar')n.x+=10; else n.cx+=10; return n; });
+  pool.push(shifted);
+  var r = buildOptions(correct, pool, 6, rnd);
+  return { grid:grid, blank:blank, options:r.options, answer:r.answer, set:'A' };
+}
+
+/* ============ B 组：图形类比 A:B = C:? ============ */
+function applyT(shapes, t){
+  var out = shapes.map(function(s){ var n={}; for(var k in s) n[k]=s[k]; return n; });
+  if(t === 'bigger'){ out.forEach(function(s){ s.r = Math.round(s.r*1.45); }); }
+  else if(t === 'smaller'){ out.forEach(function(s){ s.r = Math.round(s.r*0.7); }); }
+  else if(t === 'hollow'){ out.forEach(function(s){ s.fill = 'hollow'; }); }
+  else if(t === 'solid'){ out.forEach(function(s){ s.fill = 'solid'; }); }
+  else if(t === 'shapeNext'){ out.forEach(function(s){ s.k = NEXT_KIND[s.k]; }); }
+  else if(t === 'rot90'){ out.forEach(function(s){ s.rot = ((s.rot||0)+90)%360; }); }
+  else if(t === 'count2'){
+    out = [];
+    shapes.forEach(function(s){
+      var a={};for(var k in s)a[k]=s[k]; a.cx=38; a.cy=50;
+      var b={};for(var k in s)b[k]=s[k]; b.cx=62; b.cy=50;
+      out.push(a,b);
+    });
+  }
+  else if(t === 'bigHollow'){ out.forEach(function(s){ s.r = Math.round(s.r*1.4); s.fill='hollow'; }); }
+  else if(t === 'count2Hollow'){ out = applyT(shapes,'count2'); out.forEach(function(s){ s.fill='hollow'; }); }
+  return out;
+}
+var B_T = ['bigger','bigger','hollow','hollow','shapeNext','shapeNext','count2','count2','bigHollow','bigHollow','count2Hollow','count2Hollow'];
+function genSetB(q){
+  var rnd = mulberry32(12000 + q);
+  var t = B_T[(q-1) % 12];
+  var xKind = SHAPES[(q-1) % 3];
+  var yKind = SHAPES[q % 3];
+  var X = [{k:xKind, cx:50, cy:50, r:22, fill:'solid', rot:0}];
+  var Y = [{k:yKind, cx:50, cy:50, r:22, fill:'solid', rot:0}];
+  var TX = applyT(X, t);
+  var TY = applyT(Y, t);
+  var grid = [X, TX, Y, TY];
+  var blank = 3;
+  var correct = TY;
+  var pool = [
+    Y,
+    applyT(Y, 'shapeNext'),
+    applyT(Y, 'hollow'),
+    applyT(Y, 'smaller'),
+    applyT(Y, 'bigger'),
+    applyT(X, t),
+    applyT(Y, 'solid'),
+    applyT(Y, 'rot90')
+  ];
+  var r = buildOptions(correct, pool, 6, rnd);
+  return { grid:grid, blank:blank, options:r.options, answer:r.answer, set:'B' };
+}
+
+/* ============ C 组：数量 / 拉丁方 / 叠加（比较推理） ============ */
+function dotsLayout(n){
+  var pts = [];
+  if(n===1) pts.push([50,50]);
+  else if(n===2){ pts.push([38,50],[62,50]); }
+  else if(n===3){ pts.push([50,36],[36,64],[64,64]); }
+  else if(n===4){ pts.push([36,36],[64,36],[36,64],[64,64]); }
+  else if(n===5){ pts.push([36,36],[64,36],[50,50],[36,64],[64,64]); }
+  else if(n===6){ pts.push([36,36],[64,36],[36,50],[64,50],[36,64],[64,64]); }
+  else if(n===7){ pts.push([36,36],[64,36],[36,50],[50,50],[64,50],[36,64],[64,64]); }
+  else if(n===8){ pts.push([36,36],[50,36],[64,36],[36,50],[64,50],[36,64],[50,64],[64,64]); }
+  return pts.map(function(p){ return {k:'circle',cx:p[0],cy:p[1],r:7,fill:'solid',rot:0}; });
+}
+function oneShape(kind, fill, cx, cy, r){
+  return [{k:kind, cx:cx, cy:cy, r:r, fill:fill, rot:0}];
+}
+function genCount(q){
+  var rnd = mulberry32(13100 + q);
+  var b = ((q-1)%4)+1;
+  var grid = [];
+  for(var r=0;r<3;r++) for(var c=0;c<3;c++) grid.push(dotsLayout(b + r + c));
+  var ans = b + 4;
+  var pool = [];
+  for(var i=1;i<=8;i++){ if(i!==ans) pool.push(dotsLayout(i)); }
+  var r = buildOptions(dotsLayout(ans), pool, 8, rnd);
+  return { grid:grid, blank:8, options:r.options, answer:r.answer, set:'C' };
+}
+function genLatin(q){
+  var rnd = mulberry32(13200 + q);
+  var shift = (q-1) % 3;
+  function fillAt(r,c){ return (r + c + shift) % 3; }
+  var grid = [];
+  for(var r=0;r<3;r++) for(var c=0;c<3;c++) grid.push(oneShape(SHAPES[LATIN[r][c]], FILLS[fillAt(r,c)], 50, 50, 32));
+  var aShape = LATIN[2][2], aFill = fillAt(2,2);
+  var correct = oneShape(SHAPES[aShape], FILLS[aFill], 50, 50, 32);
+  var pool = [];
+  for(var s=0;s<3;s++) for(var f=0;f<3;f++){ if(!(s===aShape && f===aFill)) pool.push(oneShape(SHAPES[s], FILLS[f], 50,50,32)); }
+  var r = buildOptions(correct, pool, 8, rnd);
+  return { grid:grid, blank:8, options:r.options, answer:r.answer, set:'C' };
+}
+var PAIRS = [
+  [{k:'circle',cx:35,cy:50,r:22,fill:'solid',rot:0},{k:'square',cx:65,cy:50,r:22,fill:'solid',rot:0}],
+  [{k:'triangle',cx:50,cy:35,r:24,fill:'solid',rot:0},{k:'circle',cx:50,cy:65,r:22,fill:'solid',rot:0}],
+  [{k:'square',cx:35,cy:35,r:22,fill:'solid',rot:0},{k:'triangle',cx:65,cy:65,r:24,fill:'solid',rot:0}]
+];
+function genOverlay(q){
+  var rnd = mulberry32(13300 + q);
+  var p3 = PAIRS[q % 3], p1 = PAIRS[(q+1)%3], p2 = PAIRS[(q+2)%3];
+  var A1=p1[0],B1=p1[1],A2=p2[0],B2=p2[1],A3=p3[0],B3=p3[1];
+  var grid = [[A1],[B1],[A1,B1],[A2],[B2],[A2,B2],[A3],[B3],[A3,B3]];
+  var correct = [A3,B3];
+  var pool = [[A3],[B3],[A2,B3],[A3,B2],[A1,B3],[B2,B1],[A2,B2],[A1,B1]];
+  var r = buildOptions(correct, pool, 8, rnd);
+  return { grid:grid, blank:8, options:r.options, answer:r.answer, set:'C' };
+}
+
+/* ============ D 组：旋转 / 平移（空间系列） ============ */
+function genRotate(q){
+  var rnd = mulberry32(14100 + q);
+  var stepR = (q % 2 === 0) ? 45 : 90;
+  var stepC = 90;
+  function angle(r,c){ return (r*stepR + c*stepC) % 360; }
+  var grid = [];
+  for(var r=0;r<3;r++) for(var c=0;c<3;c++) grid.push([{k:'arrow',cx:50,cy:50,r:34,fill:'solid',rot:angle(r,c)}]);
+  var ans = angle(2,2);
+  var correct = [{k:'arrow',cx:50,cy:50,r:34,fill:'solid',rot:ans}];
+  var pool = [];
+  for(var d=0;d<360;d+=45){ if(d!==ans) pool.push([{k:'arrow',cx:50,cy:50,r:34,fill:'solid',rot:d}]); }
+  var r = buildOptions(correct, pool, 8, rnd);
+  return { grid:grid, blank:8, options:r.options, answer:r.answer, set:'D' };
+}
+function genTranslate(q){
+  var rnd = mulberry32(14200 + q);
+  var dx = 25, dy = 25;
+  var grid = [];
+  for(var r=0;r<3;r++) for(var c=0;c<3;c++){
+    var x = 25 + c*dx, y = 25 + r*dy;
+    if(q % 2 === 0){ grid.push([{k:'circle',cx:x,cy:y,r:10,fill:'solid',rot:0}]); }
+    else { grid.push([{k:'circle',cx:x,cy:y,r:10,fill:'solid',rot:0},{k:'circle',cx:75-c*dx,cy:y,r:6,fill:'hollow',rot:0}]); }
+  }
+  var correct = grid[8];
+  var pool = [];
+  for(var g=0;g<8;g++) pool.push(grid[g]);
+  pool.push([{k:'circle',cx:75,cy:75,r:10,fill:'solid',rot:0}]);
+  pool.push([{k:'circle',cx:25,cy:75,r:10,fill:'solid',rot:0}]);
+  var r = buildOptions(correct, pool, 8, rnd);
+  return { grid:grid, blank:8, options:r.options, answer:r.answer, set:'D' };
+}
+
+/* ============ E 组：复合（形状 × 数量 / 多维度） ============ */
+function multiShape(kind, n, r, cx, cy){
+  var pts = n===1 ? [[cx,cy]] : n===2 ? [[cx-14,cy],[cx+14,cy]] : [[cx,cy-14],[cx-14,cy+12],[cx+14,cy+12]];
+  return pts.map(function(p){ return {k:kind, cx:p[0], cy:p[1], r:r, fill:'solid', rot:0}; });
+}
+function genComposite(q){
+  var rnd = mulberry32(15100 + q);
+  var cShift = (q-1) % 3;
+  function countAt(r,c){ return ((r + c + cShift) % 3) + 1; }
+  var grid = [];
+  for(var r=0;r<3;r++) for(var c=0;c<3;c++) grid.push(multiShape(SHAPES[LATIN[r][c]], countAt(r,c), 13, 50, 50));
+  var aShape = LATIN[2][2], aCount = countAt(2,2);
+  var correct = multiShape(SHAPES[aShape], aCount, 13, 50, 50);
+  var pool = [];
+  for(var s=0;s<3;s++) for(var n=1;n<=3;n++){ if(!(s===aShape && n===aCount)) pool.push(multiShape(SHAPES[s], n, 13, 50, 50)); }
+  var r = buildOptions(correct, pool, 8, rnd);
+  return { grid:grid, blank:8, options:r.options, answer:r.answer, set:'E' };
+}
+
+/* ---------- 组装 60 题 ---------- */
+function buildQuestions(){
+  var qs = [];
+  for(var i=1;i<=60;i++){
+    if(i<=12)      qs.push(genSetA(i));
+    else if(i<=24) qs.push(genSetB(i));
+    else if(i<=36){ var j=i-24; if(j<=4) qs.push(genCount(j)); else if(j<=8) qs.push(genLatin(j)); else qs.push(genOverlay(j)); }
+    else if(i<=48){ var k=i-36; if(k<=8) qs.push(genRotate(k)); else qs.push(genTranslate(k)); }
+    else           qs.push(genComposite(i));
+  }
+  return qs;
+}
+var QUESTIONS = buildQuestions();
+/* ===== DATA GEN END ===== */
+
+
+/* ============ UI ============ */
+var TOTAL = QUESTIONS.length;
+var answers = new Array(TOTAL).fill(-1);
+var cur = 0;
+var startTime = null, timerInt = null, elapsed = 0;
+
+function $(id){ return document.getElementById(id); }
+function show(id){ ['screen-home','screen-quiz','screen-result'].forEach(function(s){ $(s).style.display = (s===id)?'block':'none'; }); }
+
+function renderQuestion(){
+  var q = QUESTIONS[cur];
+  $('qnum').textContent = (cur+1) + ' / ' + TOTAL;
+  $('setTag').textContent = q.set + ' 组';
+  $('progBar').style.width = ((cur+1)/TOTAL*100) + '%';
+  $('qtitle').textContent = '第 ' + (cur+1) + ' 题 · ' + q.set + ' 组 · 选择缺失的图形';
+  var m = $('matrix');
+  m.innerHTML = '';
+  m.className = 'matrix ' + (q.grid.length === 4 ? 'm2' : 'm3');
+  for(var i=0;i<q.grid.length;i++){
+    var d = document.createElement('div');
+    d.className = 'cell' + (i===q.blank ? ' blank' : '');
+    d.innerHTML = (i===q.blank) ? '<span class="qmark">?</span>' : cellSVG(q.grid[i]);
+    m.appendChild(d);
+  }
+  var op = $('options');
+  op.innerHTML = '';
+  q.options.forEach(function(opt, idx){
+    var b = document.createElement('div');
+    b.className = 'opt' + (answers[cur]===idx ? ' sel' : '');
+    b.innerHTML = '<span class="letter">'+LETTERS[idx]+'</span>'+cellSVG(opt);
+    b.addEventListener('click', function(){ choose(idx); });
+    op.appendChild(b);
+  });
+  $('btnPrev').disabled = (cur===0);
+  $('btnNext').textContent = (cur===TOTAL-1) ? '提交' : '下一题';
+}
+function choose(idx){
+  answers[cur] = idx;
+  var opts = $('options').children;
+  for(var i=0;i<opts.length;i++) opts[i].className = 'opt' + (i===idx ? ' sel' : '');
+}
+$('btnNext').addEventListener('click', function(){
+  if(answers[cur] === -1 && !confirm('本题还未作答，确定跳过吗？')) return;
+  if(cur === TOTAL-1){ finish(); return; }
+  cur++; renderQuestion();
+});
+$('btnPrev').addEventListener('click', function(){ if(cur>0){ cur--; renderQuestion(); } });
+
+function fmtTime(s){ var m=Math.floor(s/60), ss=s%60; return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss; }
+function tick(){
+  if(startTime) elapsed = Math.floor((Date.now()-startTime)/1000);
+  $('timer').textContent = fmtTime(elapsed);
+  if(elapsed >= 30*60) $('timer').classList.add('warn');
+}
+
+function buildSheet(){
+  var g = $('sheetGrid'); g.innerHTML = '';
+  for(var i=0;i<TOTAL;i++){
+    (function(idx){
+      var b = document.createElement('button');
+      b.textContent = idx+1;
+      if(answers[idx] !== -1) b.className = 'done';
+      if(idx === cur) b.className += ' cur';
+      b.addEventListener('click', function(){ cur = idx; $('sheet-mask').classList.remove('show'); renderQuestion(); });
+      g.appendChild(b);
+    })(i);
+  }
+}
+$('btnSheet').addEventListener('click', function(){ buildSheet(); $('sheet-mask').classList.add('show'); });
+$('btnSheetClose').addEventListener('click', function(){ $('sheet-mask').classList.remove('show'); });
+$('sheet-mask').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('show'); });
+
+/* ---------- 结果 ---------- */
+function normCdf(z){
+  var t = 1/(1+0.2316419*Math.abs(z));
+  var d = 0.3989423*Math.exp(-z*z/2);
+  var p = d*t*(0.3193815 + t*(-0.3565638 + t*(1.781478 + t*(-1.821256 + t*1.330274))));
+  return z>0 ? 1-p : p;
+}
+function calcIQ(score){
+  var z = (score - 30) / 9;
+  var iq = Math.round(100 + 15*z);
+  if(iq < 40) iq = 40; if(iq > 160) iq = 160;
+  return { iq: iq, percentile: Math.round(normCdf(z)*100) };
+}
+function levelOf(iq){
+  if(iq >= 130) return '极优秀（天赋区间）';
+  if(iq >= 120) return '优秀';
+  if(iq >= 110) return '中上';
+  if(iq >= 90)  return '中等（平均水平）';
+  if(iq >= 80)  return '中下';
+  if(iq >= 70)  return '边缘';
+  return '偏低（建议专业评估）';
+}
+function levelColor(iq){
+  if(iq >= 130) return '#7c3aed';
+  if(iq >= 120) return '#2563eb';
+  if(iq >= 110) return '#0891b2';
+  if(iq >= 90)  return '#16a34a';
+  if(iq >= 80)  return '#d97706';
+  if(iq >= 70)  return '#dc2626';
+  return '#991b1b';
+}
+function finish(){
+  if(startTime){ clearInterval(timerInt); elapsed = Math.floor((Date.now()-startTime)/1000); }
+  var score = 0;
+  for(var i=0;i<TOTAL;i++){ if(answers[i] === QUESTIONS[i].answer) score++; }
+  var r = calcIQ(score);
+  show('screen-result');
+  $('iqNum').textContent = r.iq;
+  var lv = $('iqLevel'); lv.textContent = levelOf(r.iq); lv.style.background = levelColor(r.iq);
+  $('stCorrect').textContent = score + ' / ' + TOTAL;
+  $('stPercent').textContent = r.percentile + '%';
+  $('stTime').textContent = fmtTime(elapsed);
+  var sets = ['A','B','C','D','E'];
+  var html = '';
+  sets.forEach(function(s){
+    var sc = 0;
+    for(var i=0;i<TOTAL;i++){ if(QUESTIONS[i].set===s && answers[i]===QUESTIONS[i].answer) sc++; }
+    html += '<span class="set-score">'+s+' 组 <b>'+sc+'/12</b></span>';
+  });
+  $('setScores').innerHTML = html;
+  renderDist(r.iq);
+  $('resNote').innerHTML =
+    '<b>分数解读</b>：IQ 以 <b>100 为均值、15 为标准差</b>的正态分布计分。<br>' +
+    '你的得分 <b>'+r.iq+'</b>（百分位 '+r.percentile+'%）意味着在此次图形推理中，你'+(r.iq>=100?'高于':'低于')+'全球约 50% 的人群；约 95% 的人得分在 70–130 之间。<br>' +
+    '<b>说明</b>：本工具按瑞文 SPM 的 60 题 5 组结构原创命题（原题受版权保护），结果仅反映逻辑推理能力的一个侧面，且未经专业常模校准，仅供参考，不能替代专业心理评估。';
+}
+function renderDist(iq){
+  var W=460,H=150,padL=8,padR=8,padT=8,padB=30;
+  var plotW=W-padL-padR,plotH=H-padT-padB,mu=100,sd=15;
+  function gauss(x){ return Math.exp(-Math.pow(x-mu,2)/(2*sd*sd)); }
+  var x0=55,x1=145,pts=[];
+  for(var x=x0;x<=x1;x+=1){
+    var px=padL+(x-x0)/(x1-x0)*plotW;
+    var py=padT+plotH-(gauss(x))*plotH;
+    pts.push(px.toFixed(1)+','+py.toFixed(1));
+  }
+  var path='M'+pts.join(' L');
+  var muX=padL+(mu-x0)/(x1-x0)*plotW;
+  var iqX=padL+(Math.max(x0,Math.min(x1,iq))-x0)/(x1-x0)*plotW;
+  var ticks='';
+  [70,85,100,115,130].forEach(function(v){
+    var tx=padL+(v-x0)/(x1-x0)*plotW;
+    ticks+='<line x1="'+tx+'" y1="'+(padT+plotH)+'" x2="'+tx+'" y2="'+(padT+plotH+5)+'" stroke="#cbd5e1"/>'
+      +'<text x="'+tx+'" y="'+(H-8)+'" font-size="10" text-anchor="middle" fill="#6b7280">'+v+'</text>';
+  });
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg">'
+    +'<path d="'+path+'" fill="rgba(37,99,235,.15)" stroke="#2563eb" stroke-width="2"/>'
+    +'<path d="'+path+' L'+(padL+plotW)+','+(padT+plotH)+' L'+padL+','+(padT+plotH)+' Z" fill="rgba(37,99,235,.08)" stroke="none"/>'
+    +ticks
+    +'<line x1="'+muX+'" y1="'+padT+'" x2="'+muX+'" y2="'+(padT+plotH)+'" stroke="#9ca3af" stroke-dasharray="3,3"/>'
+    +'<text x="'+muX+'" y="'+(padT-2)+'" font-size="10" text-anchor="middle" fill="#9ca3af">平均 100</text>'
+    +'<line x1="'+iqX+'" y1="'+padT+'" x2="'+iqX+'" y2="'+(padT+plotH)+'" stroke="'+levelColor(iq)+'" stroke-width="2.5"/>'
+    +'<circle cx="'+iqX+'" cy="'+(padT+plotH-gauss(Math.max(x0,Math.min(x1,iq)))*plotH)+'" r="4" fill="'+levelColor(iq)+'"/>'
+    +'<text x="'+iqX+'" y="'+(padT+6)+'" font-size="11" font-weight="700" text-anchor="middle" fill="'+levelColor(iq)+'">你 '+iq+'</text>'
+    +'</svg>';
+  $('distBox').innerHTML=svg;
+}
+
+$('btnStart').addEventListener('click', function(){
+  show('screen-quiz');
+  cur=0; answers=new Array(TOTAL).fill(-1);
+  startTime=Date.now(); elapsed=0;
+  if(timerInt) clearInterval(timerInt);
+  timerInt=setInterval(tick,1000);
+  renderQuestion(); window.scrollTo(0,0);
+});
+$('btnRetry').addEventListener('click', function(){ show('screen-home'); });
+
+document.addEventListener('keydown', function(e){
+  if($('screen-quiz').style.display === 'block'){
+    if(e.key === 'ArrowRight') $('btnNext').click();
+    else if(e.key === 'ArrowLeft') $('btnPrev').click();
+    else if(e.key >= 'a' && e.key <= 'h'){
+      var idx = LETTERS.indexOf(e.key);
+      if(idx >= 0 && idx < QUESTIONS[cur].options.length) choose(idx);
+    }
+  }
+});
+</script>
+</body>
+</html>

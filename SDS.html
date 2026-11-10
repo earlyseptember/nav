@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDS 抑郁自评量表</title>
+<style>
+  :root{
+    --blue:#0F4C81; --blue2:#2563a3; --blue-soft:#eaf1f8;
+    --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+    --bg:#f4f6f9; --card:#ffffff;
+    --green:#16a34a; --amber:#d97706; --orange:#ea580c; --red:#dc2626;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; background:var(--bg); color:var(--ink); font-size:16px; line-height:1.6;}
+  .wrap{max-width:760px; margin:0 auto; padding:16px 16px 40px;}
+  header{text-align:center; padding:20px 0 8px;}
+  header h1{font-size:24px; margin:0 0 6px; color:var(--blue);}
+  header .sub{font-size:14px; color:var(--muted);}
+  .intro{background:var(--blue-soft); border-left:4px solid var(--blue); border-radius:8px; padding:12px 14px; font-size:14.5px; color:#334155; margin:12px 0 16px;}
+  .intro b{color:var(--blue);}
+  .progress{position:sticky; top:0; z-index:10; background:var(--card); border-bottom:1px solid var(--line); padding:10px 4px; display:flex; align-items:center; gap:12px;}
+  .progress .bar{flex:1; height:8px; background:#e5e7eb; border-radius:6px; overflow:hidden;}
+  .progress .bar i{display:block; height:100%; width:0; background:var(--blue); border-radius:6px; transition:width .2s;}
+  .progress .txt{font-size:14px; color:var(--blue); font-weight:600; white-space:nowrap;}
+  .q{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:14px 0;}
+  .q .qt{font-size:18px; font-weight:600; margin-bottom:12px; display:flex; gap:10px;}
+  .q .no{color:var(--blue); font-weight:700; flex-shrink:0;}
+  .q .opts{display:flex; flex-direction:column; gap:8px;}
+  .q label{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1.5px solid var(--line); border-radius:8px; cursor:pointer; font-size:16px; transition:all .15s;}
+  .q label:hover{border-color:var(--blue2);}
+  .q label.sel{border-color:var(--blue); background:var(--blue-soft);}
+  .q label input{width:18px; height:18px; accent-color:var(--blue); flex-shrink:0; margin:0;}
+  .q.warn{border-color:var(--red); box-shadow:0 0 0 2px rgba(220,38,38,.12);}
+  .submit-bar{position:sticky; bottom:0; padding:12px 0; margin-top:8px;}
+  .submit-bar button{width:100%; padding:15px; font-size:18px; font-weight:700; color:#fff; background:var(--blue); border:none; border-radius:10px; cursor:pointer;}
+  .submit-bar button:active{background:var(--blue2);}
+
+  /* 结果页 */
+  .result{max-width:760px; margin:0 auto; padding:20px 16px 48px; display:none;}
+  .result.show{display:block;}
+  .res-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px 22px; text-align:center;}
+  .res-label{font-size:15px; color:var(--muted);}
+  .res-score{font-size:72px; font-weight:800; line-height:1; margin:8px 0 4px;}
+  .res-grade{font-size:26px; font-weight:700; margin-bottom:6px;}
+  .res-sub{font-size:14px; color:var(--muted);}
+  .res-bar-wrap{margin:20px 0; text-align:left;}
+  .res-bar{position:relative; height:16px; border-radius:8px; background:linear-gradient(90deg,#16a34a 0%,#16a34a 43%,#f59e0b 43%,#f59e0b 62%,#ea580c 62%,#ea580c 72%,#dc2626 72%,#dc2626 100%);}
+  .res-marker{position:absolute; top:-6px; width:4px; height:28px; background:#111; border-radius:2px; transform:translateX(-50%);}
+  .res-scale{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:6px;}
+  .res-detail{margin-top:18px; text-align:left; background:#f9fafb; border-radius:10px; padding:14px 16px; font-size:15px;}
+  .res-detail .row{display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line);}
+  .res-detail .row:last-child{border-bottom:none;}
+  .res-detail .row span:first-child{color:var(--muted);}
+  .res-detail .row span:last-child{font-weight:700;}
+  .notice{margin-top:18px; background:#fff7ed; border:1px solid #fed7aa; border-radius:10px; padding:14px 16px; font-size:14.5px; color:#9a3412;}
+  .hotline{margin-top:12px; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:14px 16px; font-size:14.5px; color:#991b1b;}
+  .hotline b{font-size:15px;}
+  .disclaimer{margin-top:16px; font-size:12.5px; color:#9ca3af; text-align:center; line-height:1.7;}
+  .res-btn{margin-top:20px; text-align:center;}
+  .res-btn button{padding:13px 28px; font-size:16px; font-weight:700; color:#fff; background:var(--blue); border:none; border-radius:10px; cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap" id="quizWrap">
+  <header>
+    <h1>SDS 抑郁自评量表</h1>
+    <div class="sub">Self-Rating Depression Scale（Zung）· 20 题 · 4 级评分</div>
+  </header>
+
+  <div class="intro">
+    <b>指导语：</b>请仔细阅读每一条，弄明白意思后，根据您<b>最近一周</b>的实际感受，选择最符合的一项。答案没有对错，凭第一感觉作答即可，请<b>不要漏答</b>。
+  </div>
+
+  <div class="progress">
+    <div class="bar"><i id="bar"></i></div>
+    <div class="txt" id="progTxt">0/20</div>
+  </div>
+
+  <div id="quiz"></div>
+
+  <div class="submit-bar">
+    <button id="btnSubmit">提交 · 查看结果</button>
+  </div>
+</div>
+
+<div class="result" id="resultWrap"></div>
+
+<script>
+  // ===== 题目数据（标准 SDS 20 题，r=反向计分）=====
+  var QUESTIONS = [
+    {t:"我觉得闷闷不乐，情绪低沉。", r:false},
+    {t:"我觉得一天之中早晨最好。", r:true},
+    {t:"我一阵阵哭出来或觉得想哭。", r:false},
+    {t:"我晚上睡眠不好。", r:false},
+    {t:"我吃得跟平常一样多。", r:true},
+    {t:"我与异性密切接触时和以往一样感到愉快。", r:true},
+    {t:"我发觉我的体重在下降。", r:false},
+    {t:"我有便秘的苦恼。", r:false},
+    {t:"我心跳比平常快。", r:false},
+    {t:"我无缘无故地感到疲乏。", r:false},
+    {t:"我的头脑跟平常一样清楚。", r:true},
+    {t:"我觉得经常做的事情并没有困难。", r:true},
+    {t:"我觉得不安而平静不下来。", r:false},
+    {t:"我对未来抱有希望。", r:true},
+    {t:"我比平常容易生气激动。", r:false},
+    {t:"我觉得做出决定是容易的。", r:true},
+    {t:"我觉得自己是个有用的人，有人需要我。", r:true},
+    {t:"我的生活过得很有意思。", r:true},
+    {t:"我认为如果我死了，别人会过得好些。", r:false},
+    {t:"平常感兴趣的事我仍然感兴趣。", r:true}
+  ];
+  var OPTIONS = ["没有或极少时间","少部分时间","相当多时间","绝大部分或全部时间"];
+
+  // ===== 渲染题目 =====
+  var quizEl = document.getElementById('quiz');
+  var answers = new Array(QUESTIONS.length).fill(-1);
+  var html = '';
+  QUESTIONS.forEach(function(q, i){
+    html += '<div class="q" id="q'+i+'">'
+          +   '<div class="qt"><span class="no">'+(i+1)+'.</span><span>'+q.t+'</span></div>'
+          +   '<div class="opts">';
+    OPTIONS.forEach(function(opt, k){
+      html += '<label data-q="'+i+'" data-k="'+k+'">'
+            +   '<input type="radio" name="q'+i+'" value="'+k+'"><span>'+opt+'</span>'
+            + '</label>';
+    });
+    html += '</div></div>';
+  });
+  quizEl.innerHTML = html;
+
+  // ===== 交互 =====
+  var bar = document.getElementById('bar');
+  var progTxt = document.getElementById('progTxt');
+
+  quizEl.addEventListener('change', function(e){
+    var t = e.target;
+    if(t.tagName !== 'INPUT') return;
+    var qi = parseInt(t.getAttribute('data-q') || t.name.replace('q',''), 10);
+    var k = parseInt(t.value, 10);
+    answers[qi] = k;
+    // 高亮当前选项
+    var labels = document.querySelectorAll('#q'+qi+' label');
+    labels.forEach(function(lb){ lb.classList.remove('sel'); });
+    t.closest('label').classList.add('sel');
+    document.getElementById('q'+qi).classList.remove('warn');
+    updateProgress();
+  });
+
+  function updateProgress(){
+    var done = answers.filter(function(a){ return a !== -1; }).length;
+    bar.style.width = (done / QUESTIONS.length * 100) + '%';
+    progTxt.textContent = done + '/' + QUESTIONS.length;
+  }
+
+  // ===== 计分 =====
+  function calc(answers){
+    var raw = 0;
+    for(var i=0;i<QUESTIONS.length;i++){
+      var v = answers[i];
+      if(v === -1) return null;
+      raw += QUESTIONS[i].r ? (4 - v) : (v + 1);
+    }
+    var std = Math.floor(raw * 1.25);
+    var index = raw / 80;
+    return { raw:raw, std:std, index:index };
+  }
+
+  function grade(std){
+    if(std < 53)  return {level:"无抑郁", color:"var(--green)",  desc:"您的情绪状态目前处于正常范围。请继续保持良好的作息、适量运动和积极的心态。"};
+    if(std <= 62) return {level:"轻度抑郁", color:"var(--amber)", desc:"可能存在轻度的情绪困扰。建议关注自身情绪变化，注意休息、适当运动，多与亲友交流倾诉。"};
+    if(std <= 72) return {level:"中度抑郁", color:"var(--orange)",desc:"情绪困扰较为明显。建议尽快前往综合医院心理科或精神科进行专业评估。"};
+    return {level:"重度抑郁", color:"var(--red)", desc:"请尽快寻求专业帮助。若伴有轻生念头，请立即拨打下方心理援助热线，或前往附近医院急诊。"};
+  }
+
+  // ===== 提交 =====
+  document.getElementById('btnSubmit').addEventListener('click', function(){
+    var missing = [];
+    for(var i=0;i<answers.length;i++) if(answers[i] === -1) missing.push(i);
+    if(missing.length){
+      missing.forEach(function(i){ document.getElementById('q'+i).classList.add('warn'); });
+      var first = document.getElementById('q'+missing[0]);
+      first.scrollIntoView({behavior:'smooth', block:'center'});
+      alert('还有 ' + missing.length + ' 题未作答，已用红框标出，请完成后提交。');
+      return;
+    }
+    var r = calc(answers);
+    var g = grade(r.std);
+    var markerPct = Math.min(100, Math.max(0, (r.std - 25) / (100 - 25) * 100));
+    var hotline = (answers[18] >= 3) ? true : false;
+
+    var resultHtml =
+      '<div class="res-card">'
+      + '<div class="res-label">SDS 标准分</div>'
+      + '<div class="res-score" style="color:'+g.color+'">'+r.std+'</div>'
+      + '<div class="res-grade" style="color:'+g.color+'">'+g.level+'</div>'
+      + '<div class="res-sub">总粗分 '+r.raw+' / 80 · 抑郁严重度指数 '+(r.index).toFixed(2)+'</div>'
+      + '<div class="res-bar-wrap">'
+      +   '<div class="res-bar"><div class="res-marker" style="left:'+markerPct+'%"></div></div>'
+      +   '<div class="res-scale"><span>25 无抑郁</span><span>53 轻度</span><span>63 中度</span><span>73 重度</span><span>100</span></div>'
+      + '</div>'
+      + '<div class="res-detail">'
+      +   '<div class="row"><span>标准分</span><span>'+r.std+' 分</span></div>'
+      +   '<div class="row"><span>总粗分</span><span>'+r.raw+' 分（满分 80）</span></div>'
+      +   '<div class="row"><span>抑郁严重度指数</span><span>'+(r.index).toFixed(2)+'</span></div>'
+      +   '<div class="row"><span>结果等级</span><span style="color:'+g.color+'">'+g.level+'</span></div>'
+      + '</div>'
+      + '<div class="notice"><b>解读：</b>'+g.desc+'</div>';
+
+    if(hotline){
+      resultHtml += '<div class="hotline"><b>特别提示：</b>第 19 题「我认为如果我死了，别人会过得好些」您选择了较高频度，请务必重视。若近期有轻生想法，请立即联系：<br>· 全国 24 小时心理援助热线：<b>400-161-9995</b><br>· 北京心理危机研究与干预中心：<b>010-82951332</b></div>';
+    } else if(r.std >= 63){
+      resultHtml += '<div class="hotline"><b>专业求助渠道：</b><br>· 全国 24 小时心理援助热线：400-161-9995<br>· 北京心理危机研究与干预中心：010-82951332<br>建议前往综合医院心理科 / 精神科就诊。</div>';
+    }
+
+    resultHtml += '<div class="res-btn"><button id="btnRetry">重新测试</button></div>'
+      + '<div class="disclaimer">本量表（Zung SDS）仅供自我评估参考，不构成医学诊断，不能替代专业医生或心理咨询师的评估。得分受近期情绪波动、作答态度等因素影响，如有疑虑请寻求正规专业帮助。</div>';
+
+    document.getElementById('resultWrap').innerHTML = resultHtml;
+    document.getElementById('quizWrap').style.display = 'none';
+    var rw = document.getElementById('resultWrap');
+    rw.classList.add('show');
+    window.scrollTo(0, 0);
+    document.getElementById('btnRetry').addEventListener('click', function(){
+      answers.fill(-1);
+      document.querySelectorAll('#quiz input').forEach(function(inp){ inp.checked = false; });
+      document.querySelectorAll('#quiz label').forEach(function(lb){ lb.classList.remove('sel'); });
+      document.querySelectorAll('#quiz .q').forEach(function(q){ q.classList.remove('warn'); });
+      updateProgress();
+      rw.classList.remove('show');
+      document.getElementById('quizWrap').style.display = 'block';
+      window.scrollTo(0, 0);
+    });
+  });
+</script>
+</body>
+</html>

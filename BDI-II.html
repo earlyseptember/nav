@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>贝克抑郁量表 BDI-II</title>
+<style>
+  :root{
+    --blue:#0F4C81; --blue2:#2563a3; --blue-soft:#eaf1f8;
+    --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+    --bg:#f4f6f9; --card:#ffffff;
+    --green:#16a34a; --amber:#d97706; --orange:#ea580c; --red:#dc2626;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; background:var(--bg); color:var(--ink); font-size:16px; line-height:1.6;}
+  .wrap{max-width:760px; margin:0 auto; padding:16px 16px 40px;}
+  header{text-align:center; padding:20px 0 8px;}
+  header h1{font-size:24px; margin:0 0 6px; color:var(--blue);}
+  header .sub{font-size:14px; color:var(--muted);}
+  .intro{background:var(--blue-soft); border-left:4px solid var(--blue); border-radius:8px; padding:12px 14px; font-size:14.5px; color:#334155; margin:12px 0 16px;}
+  .intro b{color:var(--blue);}
+  .progress{position:sticky; top:0; z-index:10; background:var(--card); border-bottom:1px solid var(--line); padding:10px 4px; display:flex; align-items:center; gap:12px;}
+  .progress .bar{flex:1; height:8px; background:#e5e7eb; border-radius:6px; overflow:hidden;}
+  .progress .bar i{display:block; height:100%; width:0; background:var(--blue); border-radius:6px; transition:width .2s;}
+  .progress .txt{font-size:14px; color:var(--blue); font-weight:600; white-space:nowrap;}
+  .q{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:14px 0;}
+  .q .qt{font-size:18px; font-weight:700; margin-bottom:12px; color:var(--blue);}
+  .q .opts{display:flex; flex-direction:column; gap:8px;}
+  .q label{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1.5px solid var(--line); border-radius:8px; cursor:pointer; font-size:15px; line-height:1.5; transition:all .15s;}
+  .q label:hover{border-color:var(--blue2);}
+  .q label.sel{border-color:var(--blue); background:var(--blue-soft);}
+  .q label input{width:18px; height:18px; accent-color:var(--blue); flex-shrink:0; margin:2px 0 0;}
+  .q.warn{border-color:var(--red); box-shadow:0 0 0 2px rgba(220,38,38,.12);}
+  .q.critical .qt::after{content:"⚠ 关键条目"; display:inline-block; margin-left:8px; font-size:11px; font-weight:600; color:#fff; background:var(--red); border-radius:4px; padding:1px 6px; vertical-align:middle;}
+  .submit-bar{position:sticky; bottom:0; padding:12px 0; margin-top:8px;}
+  .submit-bar button{width:100%; padding:15px; font-size:18px; font-weight:700; color:#fff; background:var(--blue); border:none; border-radius:10px; cursor:pointer;}
+  .submit-bar button:active{background:var(--blue2);}
+
+  .result{max-width:760px; margin:0 auto; padding:20px 16px 48px; display:none;}
+  .result.show{display:block;}
+  .res-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px 22px; text-align:center;}
+  .res-label{font-size:15px; color:var(--muted);}
+  .res-score{font-size:72px; font-weight:800; line-height:1; margin:8px 0 4px;}
+  .res-grade{font-size:26px; font-weight:700; margin-bottom:6px;}
+  .res-sub{font-size:14px; color:var(--muted);}
+  .res-bar-wrap{margin:20px 0; text-align:left;}
+  .res-bar{position:relative; height:16px; border-radius:8px; background:linear-gradient(90deg,#16a34a 0%,#16a34a 21%,#f59e0b 21%,#f59e0b 30%,#ea580c 30%,#ea580c 44%,#dc2626 44%,#dc2626 100%);}
+  .res-marker{position:absolute; top:-6px; width:4px; height:28px; background:#111; border-radius:2px; transform:translateX(-50%);}
+  .res-scale{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:6px;}
+  .res-detail{margin-top:18px; text-align:left; background:#f9fafb; border-radius:10px; padding:14px 16px; font-size:15px;}
+  .res-detail .row{display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--line);}
+  .res-detail .row:last-child{border-bottom:none;}
+  .res-detail .row span:first-child{color:var(--muted);}
+  .res-detail .row span:last-child{font-weight:700;}
+  .notice{margin-top:18px; background:#fff7ed; border:1px solid #fed7aa; border-radius:10px; padding:14px 16px; font-size:14.5px; color:#9a3412;}
+  .hotline{margin-top:12px; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:14px 16px; font-size:14.5px; color:#991b1b;}
+  .hotline b{font-size:15px;}
+  .disclaimer{margin-top:16px; font-size:12.5px; color:#9ca3af; text-align:center; line-height:1.7;}
+  .res-btn{margin-top:20px; text-align:center;}
+  .res-btn button{padding:13px 28px; font-size:16px; font-weight:700; color:#fff; background:var(--blue); border:none; border-radius:10px; cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap" id="quizWrap">
+  <header>
+    <h1>贝克抑郁量表（BDI-II）</h1>
+    <div class="sub">Beck Depression Inventory-II · 21 题 · 4 级评分</div>
+  </header>
+
+  <div class="intro">
+    <b>指导语：</b>下面有 21 组陈述，请仔细阅读每一组，然后选出<b>最能描述您最近两周（包括今天）感受</b>的一项。每组只选一项，答案没有对错，请<b>不要漏答</b>。
+  </div>
+
+  <div class="progress">
+    <div class="bar"><i id="bar"></i></div>
+    <div class="txt" id="progTxt">0/21</div>
+  </div>
+
+  <div id="quiz"></div>
+
+  <div class="submit-bar">
+    <button id="btnSubmit">提交 · 查看结果</button>
+  </div>
+</div>
+
+<div class="result" id="resultWrap"></div>
+
+<script>
+  // ===== 题目数据（标准 BDI-II 21 题，critical=关键条目）=====
+  var QUESTIONS = [
+    {title:"悲伤", opts:["我不感到悲伤","我经常感到悲伤","我一直感到悲伤","我太悲伤或太难过，到了难以忍受的程度"]},
+    {title:"悲观", opts:["我没有对未来失去信心","我比以往更加对未来没有信心","我感到前景黯淡","我觉得将来毫无希望，并且只会变得更加糟糕"]},
+    {title:"过去的失败", opts:["我不觉得自己是个失败者","我的失败比较多","回首往事，我看到一大堆的失败","我觉得自己是一个彻底的失败者"]},
+    {title:"丧失乐趣", opts:["我和过去一样能从喜欢的事情中得到乐趣","我不能像过去一样从喜欢的事情中得到乐趣","我从过去喜欢的事情中获得的快乐很少","我完全不能从过去喜欢的事情中获得快乐"]},
+    {title:"内疚感", opts:["我没有特别的内疚感","我对自己做过或该做但没做的许多事感到内疚","在大部分时间里我都感到内疚","我任何时候都感到内疚"]},
+    {title:"受惩罚感", opts:["我没觉得自己在受惩罚","我觉得自己可能会受到惩罚","我觉得自己会受到惩罚","我觉得正在受到惩罚"]},
+    {title:"自我厌恶", opts:["我对自己的感觉同过去一样","我对自己失去了信心","我对自己感到失望","我讨厌我自己"]},
+    {title:"自责", opts:["与过去相比，我没有更多地责备或批评自己","我比过去责备自己更多","只要我有过失，我就责备自己","只要发生不好的事情，我就责备自己"]},
+    {title:"自杀念头", critical:true, opts:["我没有任何自杀的想法","我有自杀的想法，但我不会去做","我想自杀","如果有机会我就会自杀"]},
+    {title:"哭泣", opts:["和过去比较，我最近哭或想要哭的次数没有增加多少","和过去比较，我最近比过去哭或想要哭的次数增加了一些","和过去比较，最近任何小事都会让我哭或想要哭","和过去比较，最近我一直特别想要哭，但又哭不出来"]},
+    {title:"烦躁不安", opts:["我现在没有比过去更加烦躁","我现在比过去更容易烦躁","我最近非常烦躁或不安，很难保持安静","我非常烦躁不安，必须不停走动或做事情"]},
+    {title:"兴趣丧失", opts:["我对其他人或活动没有失去兴趣","和过去相比，我对其他人或事的兴趣减少了","我失去了对其他人或事的大部分兴趣","现在任何事情都很难引起我的兴趣"]},
+    {title:"犹豫不决", opts:["我现在能和过去一样作决定","我现在作决定比以前困难","我作决定比以前困难了很多","我现在作任何决定都很困难"]},
+    {title:"无价值感", opts:["我不觉得自己没有价值","我认为自己不如过去有价值或有用了","我觉得自己不如别人有价值","我觉得自己毫无价值"]},
+    {title:"精力丧失", opts:["我和过去一样有精力","我不如从前有精力","我做很多事情都感到没有精力","我做任何事情都感到没有精力"]},
+    {title:"睡眠改变", opts:["我没觉得睡眠有什么变化","我的睡眠比过去略少，或略多","我的睡眠比以前少了很多，或多了很多","我根本无法睡觉，或我一直想睡觉"]},
+    {title:"易怒", opts:["我并不比过去容易发火","与过去相比，我比较容易发火","与过去相比，我非常容易发火","我现在随时都很容易发火"]},
+    {title:"食欲改变", opts:["我没觉得食欲有什么变化","我的食欲比过去略差，或略好","我的食欲比过去差了很多，或好很多","我完全没有食欲，或总是非常想吃东西"]},
+    {title:"专注困难", opts:["我和过去一样可以集中精神","我无法像过去一样集中精神","任何事情都很难让我长时间集中精神","任何事情都无法让我集中精神"]},
+    {title:"疲劳", opts:["我没觉得比过去累或乏力","我比过去更容易累或乏力","因为太累或太乏力，很多过去常做的事情不能做了","因为太累或太乏力，几乎全部过去常做的事情都不能做了"]},
+    {title:"性兴趣减退", opts:["和过去比较，我现在对性的兴趣和以前一样没有什么变化","和过去比较，我现在对性的兴趣比过去降低了","和过去比较，我现在对性的兴趣大大下降","和过去比较，我现在对性的兴趣已经完全丧失"]}
+  ];
+
+  // ===== 渲染题目 =====
+  var quizEl = document.getElementById('quiz');
+  var answers = new Array(QUESTIONS.length).fill(-1);
+  var html = '';
+  QUESTIONS.forEach(function(q, i){
+    html += '<div class="q'+(q.critical?' critical':'')+'" id="q'+i+'">'
+          +   '<div class="qt">'+(i+1)+'. '+q.title+'</div>'
+          +   '<div class="opts">';
+    q.opts.forEach(function(opt, k){
+      html += '<label data-q="'+i+'" data-k="'+k+'">'
+            +   '<input type="radio" name="q'+i+'" value="'+k+'"><span>'+opt+'</span>'
+            + '</label>';
+    });
+    html += '</div></div>';
+  });
+  quizEl.innerHTML = html;
+
+  // ===== 交互 =====
+  var bar = document.getElementById('bar');
+  var progTxt = document.getElementById('progTxt');
+
+  quizEl.addEventListener('change', function(e){
+    var t = e.target;
+    if(t.tagName !== 'INPUT') return;
+    var qi = parseInt(t.getAttribute('data-q') || t.name.replace('q',''), 10);
+    var k = parseInt(t.value, 10);
+    answers[qi] = k;
+    var labels = document.querySelectorAll('#q'+qi+' label');
+    labels.forEach(function(lb){ lb.classList.remove('sel'); });
+    t.closest('label').classList.add('sel');
+    document.getElementById('q'+qi).classList.remove('warn');
+    updateProgress();
+  });
+
+  function updateProgress(){
+    var done = answers.filter(function(a){ return a !== -1; }).length;
+    bar.style.width = (done / QUESTIONS.length * 100) + '%';
+    progTxt.textContent = done + '/' + QUESTIONS.length;
+  }
+
+  // ===== 计分（0-3 直接相加，总分 0-63）=====
+  function calc(answers){
+    var total = 0;
+    for(var i=0;i<answers.length;i++){
+      if(answers[i] === -1) return null;
+      total += answers[i]; // 选项索引即分值 0-3
+    }
+    return total;
+  }
+
+  function grade(total){
+    if(total <= 13) return {level:"无抑郁", color:"var(--green)",  desc:"您的情绪状态处于正常范围，无明显抑郁症状。请继续保持良好的生活作息和心态。"};
+    if(total <= 19) return {level:"轻度抑郁", color:"var(--amber)", desc:"可能存在轻度抑郁症状。建议关注自身情绪变化，注意休息、适当运动，多与亲友交流倾诉。"};
+    if(total <= 28) return {level:"中度抑郁", color:"var(--orange)",desc:"抑郁症状较为明显，已开始影响生活。建议寻求心理咨询师或心理医生的专业帮助。"};
+    return {level:"重度抑郁", color:"var(--red)", desc:"抑郁症状严重，身心症状并存，生活质量受到较大影响。请尽快前往综合医院心理科或精神科就诊。"};
+  }
+
+  // ===== 提交 =====
+  document.getElementById('btnSubmit').addEventListener('click', function(){
+    var missing = [];
+    for(var i=0;i<answers.length;i++) if(answers[i] === -1) missing.push(i);
+    if(missing.length){
+      missing.forEach(function(i){ document.getElementById('q'+i).classList.add('warn'); });
+      var first = document.getElementById('q'+missing[0]);
+      first.scrollIntoView({behavior:'smooth', block:'center'});
+      alert('还有 ' + missing.length + ' 题未作答，已用红框标出，请完成后提交。');
+      return;
+    }
+    var total = calc(answers);
+    var g = grade(total);
+    var markerPct = Math.min(100, Math.max(0, total / 63 * 100));
+    var suicideRisk = answers[8] > 0; // 第 9 题（索引 8）自杀念头非零
+
+    var resultHtml =
+      '<div class="res-card">'
+      + '<div class="res-label">BDI-II 抑郁总分</div>'
+      + '<div class="res-score" style="color:'+g.color+'">'+total+'</div>'
+      + '<div class="res-grade" style="color:'+g.color+'">'+g.level+'</div>'
+      + '<div class="res-sub">总分 0–63 · 评估最近两周</div>'
+      + '<div class="res-bar-wrap">'
+      +   '<div class="res-bar"><div class="res-marker" style="left:'+markerPct+'%"></div></div>'
+      +   '<div class="res-scale"><span>0 无抑郁</span><span>14 轻度</span><span>20 中度</span><span>29 重度</span><span>63</span></div>'
+      + '</div>'
+      + '<div class="res-detail">'
+      +   '<div class="row"><span>抑郁总分</span><span>'+total+' 分（满分 63）</span></div>'
+      +   '<div class="row"><span>结果等级</span><span style="color:'+g.color+'">'+g.level+'</span></div>'
+      + '</div>'
+      + '<div class="notice"><b>解读：</b>'+g.desc+'</div>';
+
+    if(suicideRisk){
+      resultHtml += '<div class="hotline"><b>⚠ 特别提示：</b>第 9 题「自杀念头」您选择了非「无」的选项，请务必重视。若近期有轻生想法，请立即联系：<br>· 全国 24 小时心理援助热线：<b>400-161-9995</b><br>· 北京心理危机研究与干预中心：<b>010-82951332</b><br>或立即前往附近医院急诊。</div>';
+    } else if(total >= 20){
+      resultHtml += '<div class="hotline"><b>专业求助渠道：</b><br>· 全国 24 小时心理援助热线：400-161-9995<br>· 北京心理危机研究与干预中心：010-82951332<br>建议前往综合医院心理科 / 精神科就诊。</div>';
+    }
+
+    resultHtml += '<div class="res-btn"><button id="btnRetry">重新测试</button></div>'
+      + '<div class="disclaimer">本量表（Beck Depression Inventory-II, BDI-II）版权归 Pearson（The Psychological Corporation）所有，本页面仅供个人自我评估与学习参考，不构成医学诊断，不能替代专业医生或心理咨询师的评估。得分受近期情绪波动、作答态度等因素影响，如有疑虑请寻求正规专业帮助。</div>';
+
+    document.getElementById('resultWrap').innerHTML = resultHtml;
+    document.getElementById('quizWrap').style.display = 'none';
+    var rw = document.getElementById('resultWrap');
+    rw.classList.add('show');
+    window.scrollTo(0, 0);
+    document.getElementById('btnRetry').addEventListener('click', function(){
+      answers.fill(-1);
+      document.querySelectorAll('#quiz input').forEach(function(inp){ inp.checked = false; });
+      document.querySelectorAll('#quiz label').forEach(function(lb){ lb.classList.remove('sel'); });
+      document.querySelectorAll('#quiz .q').forEach(function(q){ q.classList.remove('warn'); });
+      updateProgress();
+      rw.classList.remove('show');
+      document.getElementById('quizWrap').style.display = 'block';
+      window.scrollTo(0, 0);
+    });
+  });
+</script>
+</body>
+</html>

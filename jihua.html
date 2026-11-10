@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>45岁居家训练 · 月度打卡表</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "SimSun", "宋体", serif; color: #1a1a1a; background: #e8e8e8; }
+  .page {
+    width: 210mm; min-height: 297mm; margin: 10px auto; background: #fff;
+    padding: 12mm 14mm 10mm; position: relative;
+  }
+  @media print {
+    body { background: #fff; }
+    .page { margin: 0; width: auto; min-height: auto; page-break-after: always; }
+    .page:last-child { page-break-after: auto; }
+    .no-print { display: none; }
+  }
+  h1 { font-family: "SimHei", "黑体", sans-serif; font-size: 17pt; color: #0F4C81; text-align: center; margin-bottom: 2mm; }
+  .sub { text-align: center; font-size: 9.5pt; color: #555; margin-bottom: 3mm; }
+  h2 { font-family: "SimHei", "黑体", sans-serif; font-size: 12.5pt; color: #0F4C81; border-bottom: 2px solid #0F4C81; padding-bottom: 1.5mm; margin: 6mm 0 3mm; }
+  h2:first-of-type { margin-top: 0; }
+  .legend { font-size: 8.5pt; line-height: 1.5; margin-bottom: 1.5mm; }
+  .legend b.a { color: #0F4C81; } .legend b.b { color: #0F4C81; }
+  .legend b.w { color: #2e7d32; } .legend b.r { color: #888; }
+  .sumline { font-size: 9pt; margin-bottom: 2.5mm; }
+  .sumline span { display: inline-block; border-bottom: 1px solid #333; min-width: 22mm; text-align: center; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 0.6pt solid #9fb3c8; text-align: center; font-size: 9pt; padding: 1.2mm 0.5mm; }
+  th { background: #0F4C81; color: #fff; font-family: "SimHei", "黑体", sans-serif; font-weight: normal; padding: 1.8mm 0.5mm; }
+  tr:nth-child(even) td { background: #f2f6fa; }
+  td.day { font-weight: bold; }
+  .bx { color: #0F4C81; font-size: 11pt; }
+  .bx.g { color: #2e7d32; } .bx.gr { color: #999; }
+  td.note { text-align: left; padding-left: 1.5mm; }
+  .foot { margin-top: 3mm; font-size: 8.5pt; color: #666; text-align: center; }
+  .pgnum { position: absolute; bottom: 5mm; left: 0; right: 0; text-align: center; font-size: 8pt; color: #999; }
+  /* 第二页 */
+  table.act { margin-bottom: 4mm; }
+  table.act th, table.act td { font-size: 9pt; padding: 1.6mm 1.5mm; }
+  table.act td.l { text-align: left; }
+  .ok { color: #2e7d32; font-weight: bold; }
+  .no { color: #c0392b; font-weight: bold; }
+  .tip { font-size: 9pt; line-height: 1.6; margin: 1.5mm 0; }
+  .tip b { font-family: "SimHei", "黑体", sans-serif; color: #0F4C81; }
+  .warn { background: #fdf3f2; border: 0.8pt solid #e4b4ae; padding: 2.5mm 3mm; font-size: 9pt; line-height: 1.6; margin-top: 4mm; }
+  .warn b { color: #c0392b; }
+  .meta { font-size: 9pt; line-height: 1.7; margin-bottom: 3mm; }
+  .meta b { font-family: "SimHei", "黑体", sans-serif; color: #0F4C81; }
+</style>
+</head>
+<body>
+
+<!-- ================= 第 1 页：月度打卡表 ================= -->
+<div class="page">
+  <h1>45岁居家训练 · 月度打卡表</h1>
+  <div class="sub">________ 年 ______ 月　|　目标：每周 3 练 + 2 次有氧　|　每月打印一张，做完打勾</div>
+
+  <div class="legend">
+    <b class="a">A</b>＝下肢＋核心（深蹲·箭步蹲·臀桥·平板·死虫）　
+    <b class="b">B</b>＝上肢推拉（俯卧撑·推举·划船·弹力带）　
+    <b class="w">走</b>＝快走 20–30 分钟　
+    <b class="r">休</b>＝散步或完全休息
+  </div>
+  <div class="sumline">
+    本月合计：训练 <span></span> 次　有氧 <span></span> 次　　体重 <span></span> → <span></span> kg　　腰围 <span></span> → <span></span> cm
+  </div>
+
+  <table>
+    <tr>
+      <th style="width:9%">日期</th><th style="width:9%">星期</th>
+      <th style="width:7%">A</th><th style="width:7%">B</th><th style="width:7%">走</th><th style="width:7%">休</th>
+      <th style="width:14%">蛋白质 (g)</th><th style="width:12%">喝水 (ml)</th><th style="width:10%">睡眠 (h)</th><th style="width:25%">备注</th>
+    </tr>
+    <!-- 行由脚本生成的静态副本 -->
+  </table>
+
+  <div class="foot">每周节奏参考：一 A · 二 走 · 三 B · 四 走 · 五 A · 六 休 · 日 休（可整体平移，但 A/B 之间至少隔一天）</div>
+  <div class="pgnum">第 1 页 · 共 2 页</div>
+</div>
+
+<!-- ================= 第 2 页：A / B 组动作详解 ================= -->
+<div class="page">
+  <h1>A 组 / B 组 具体内容与训练方法</h1>
+  <div class="sub">组间休息 60–90 秒 · 全程约 35–40 分钟 · 通用节奏：<b>下放慢 2 秒、发力 1–2 秒</b></div>
+
+  <h2>训练 A：下肢 + 核心（周一 / 周五）</h2>
+  <table class="act">
+    <tr><th style="width:17%">动作</th><th style="width:13%">组 × 次</th><th style="width:24%">每次节奏</th><th style="width:23%">✓ 做对的标准</th><th style="width:23%">✗ 别这样做</th></tr>
+    <tr><td class="l"><b>高脚杯深蹲</b></td><td>3 × 8–12</td><td>下蹲 2 秒 / 起身 2 秒</td><td class="l"><span class="ok">✓</span> 背挺直、膝盖对准脚尖、下到大腿接近平行</td><td class="l"><span class="no">✗</span> 膝盖内扣、弓背、脚跟离地</td></tr>
+    <tr><td class="l"><b>箭步蹲</b>（每腿）</td><td>3 × 8–12</td><td>下蹲 2 秒 / 起身 1–2 秒</td><td class="l"><span class="ok">✓</span> 前膝不过脚尖、上身直立</td><td class="l"><span class="no">✗</span> 前膝内扣、身体前倾</td></tr>
+    <tr><td class="l"><b>臀桥</b></td><td>3 × 10–15</td><td>顶起 2 秒 · 停 1 秒 · 放下 2 秒</td><td class="l"><span class="ok">✓</span> 臀部收紧、顶峰停 1 秒</td><td class="l"><span class="no">✗</span> 用腰顶起、脖子使劲</td></tr>
+    <tr><td class="l"><b>平板支撑</b></td><td>3 × 20–40 秒</td><td>静态保持（记秒数）</td><td class="l"><span class="ok">✓</span> 身体成直线、收腹</td><td class="l"><span class="no">✗</span> 塌腰、撅臀</td></tr>
+    <tr><td class="l"><b>死虫式</b></td><td>3 × 10/侧</td><td>伸出 3 秒 / 收回 2 秒</td><td class="l"><span class="ok">✓</span> 腰始终贴地、对侧手脚慢伸</td><td class="l"><span class="no">✗</span> 腰离地、动作过快</td></tr>
+  </table>
+
+  <h2>训练 B：上肢推 + 拉（周三）</h2>
+  <table class="act">
+    <tr><th style="width:17%">动作</th><th style="width:13%">组 × 次</th><th style="width:24%">每次节奏</th><th style="width:23%">✓ 做对的标准</th><th style="width:23%">✗ 别这样做</th></tr>
+    <tr><td class="l"><b>俯卧撑</b>（跪姿→标准）</td><td>3 × 8–12</td><td>下放 2 秒 / 推起 1–2 秒</td><td class="l"><span class="ok">✓</span> 身体成直线、胸部接近地面</td><td class="l"><span class="no">✗</span> 塌腰、手过宽耸肩</td></tr>
+    <tr><td class="l"><b>哑铃坐姿推举</b></td><td>3 × 8–12</td><td>上推 1–2 秒 / 下放 2 秒</td><td class="l"><span class="ok">✓</span> 背靠椅背、直上直下</td><td class="l"><span class="no">✗</span> 塌腰后仰、借力甩</td></tr>
+    <tr><td class="l"><b>哑铃单臂划船</b>（每侧）</td><td>3 × 8–12</td><td>拉 1 秒 / 放 2 秒</td><td class="l"><span class="ok">✓</span> 背挺平、肘向身后拉</td><td class="l"><span class="no">✗</span> 弓背、耸肩甩动</td></tr>
+    <tr><td class="l"><b>弹力带划船 / 下拉</b></td><td>3 × 10–15</td><td>拉 1 秒 / 回 2 秒</td><td class="l"><span class="ok">✓</span> 肩胛骨收紧、有停顿</td><td class="l"><span class="no">✗</span> 耸肩、全靠手臂</td></tr>
+    <tr><td class="l"><b>侧平举</b>（可选）</td><td>3 × 10–15</td><td>抬 1–2 秒 / 放 2 秒</td><td class="l"><span class="ok">✓</span> 肘微屈、抬到与肩平</td><td class="l"><span class="no">✗</span> 耸肩、甩上去</td></tr>
+  </table>
+
+  <div class="meta">
+    <b>器材对应：</b>哑铃动作用可调节哑铃（A 组深蹲手持哑铃于胸前即「高脚杯深蹲」）；弹力带动作用带手柄拉力绳（划船＝踩住带中段往腹部拉；下拉＝门扣固定高处往下拉）。<br>
+    <b>热身（5 分钟）：</b>原地踏步 2 分钟 → 肩、髋、膝绕环各 10 圈 → 第一个动作空手/最轻重量做 8 次。<br>
+    <b>拉伸（练后 3 分钟）：</b>大腿前侧、臀部、胸、肩、背各 30 秒。<br>
+    <b>进阶规则（双进阶法）：</b>某动作能标准做完 3 组 × 12 次 → 下次加 1–2.5kg（或换更重弹力带），回到 3 × 8 再慢慢往上。每练 6 周安排 1 周减载（重量减半）。<br>
+    <b>健腹轮（12 周后引入）：</b>前 3 个月不用；当平板支撑稳定达 60 秒以上再加入——跪姿只滚出 1/3 距离，腰不塌，3 组 × 5–8 次 → 逐步加大幅度到半程 3 × 8–10 → 稳定后替代平板支撑。一旦塌腰立即缩短滚出距离。
+  </div>
+
+  <div class="tip"><b>降阶方案：</b>标准俯卧撑做不了 → 跪姿 / 手撑桌沿；标准深蹲吃力 → 身后放椅子做「箱式深蹲」。</div>
+
+  <div class="warn"><b>⚠ 安全提醒：</b>训练全程<b>别憋气</b>（发力时呼气）；关节出现刺痛立刻停；睡眠差的日子降强度或改散步；有胸痛、头晕、异常气短，立即停止并就医。</div>
+
+  <div class="pgnum">第 2 页 · 共 2 页</div>
+</div>
+
+<script>
+// 生成 31 天打卡行
+(function () {
+  var rows = "";
+  for (var d = 1; d <= 31; d++) {
+    rows += '<tr><td class="day">' + d + '</td><td></td>' +
+      '<td><span class="bx">□</span></td><td><span class="bx">□</span></td>' +
+      '<td><span class="bx g">□</span></td><td><span class="bx gr">□</span></td>' +
+      '<td></td><td></td><td></td><td class="note"></td></tr>';
+  }
+  document.querySelector(".page table").insertAdjacentHTML("beforeend", rows);
+})();
+</script>
+
+<div class="no-print" style="text-align:center;padding:8px;font-family:sans-serif;font-size:13px;color:#555;">
+  打印时选择 A4 · 边距“默认”或“无” · 缩放 100%，即可两页完整输出。
+</div>
+
+</body>
+</html>
