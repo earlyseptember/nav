@@ -298,6 +298,14 @@ function transform(shapes, t){
     return n;
   });
 }
+function scaleA(shapes, f){
+  return shapes.map(function(s){
+    var n = {}; for(var k in s) n[k] = s[k];
+    if(s.k === 'bar'){ n.w = Math.round(s.w * f); n.h = Math.round(s.h * f); }
+    else { n.r = Math.round(s.r * f); }
+    return n;
+  });
+}
 function genSetA(q){
   var rnd = mulberry32(11000 + q);
   var base = BASE_A[(q-1) % 12];
@@ -306,9 +314,8 @@ function genSetA(q){
   var grid = TRANS.map(function(t){ return transform(base, t); });
   var pool = [];
   TRANS.forEach(function(t, i){ if(i !== blank) pool.push(transform(base, t)); });
-  pool.push(base.map(function(s){ var n={};for(var k in s)n[k]=s[k];return n; }).concat([{k:'circle',cx:72,cy:72,r:8}]));
-  var shifted = correct.map(function(s){ var n={};for(var k in s)n[k]=s[k]; if(s.k==='bar')n.x+=10; else n.cx+=10; return n; });
-  pool.push(shifted);
+  pool.push(scaleA(correct, 0.6));
+  pool.push(scaleA(correct, 1.35));
   var r = buildOptions(correct, pool, 6, rnd);
   return { grid:grid, blank:blank, options:r.options, answer:r.answer, set:'A' };
 }
