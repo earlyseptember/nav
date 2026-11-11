@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蒸菜大全 · 家常蒸菜详细做法</title>
+<style>
+  :root{
+    --blue:#0F4C81; --blue-dark:#0a3a63; --blue-light:#eaf2f9;
+    --accent:#e8742a; --text:#2b2b2b; --muted:#6b7280; --line:#dbe4ec;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Microsoft YaHei","PingFang SC","Segoe UI",sans-serif;color:var(--text);background:#f5f7fa;line-height:1.75;font-size:17px;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:980px;margin:0 auto;padding:0 16px 60px;}
+  header{background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:#fff;padding:42px 18px 36px;text-align:center;}
+  header h1{font-size:36px;letter-spacing:3px;margin-bottom:10px;}
+  header p{font-size:16px;opacity:.92;}
+  header .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:5px 18px;font-size:14px;margin-top:14px;}
+  nav{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0;box-shadow:0 2px 10px rgba(15,76,129,.05);}
+  nav h2{font-size:18px;color:var(--blue);margin-bottom:14px;border-left:4px solid var(--blue);padding-left:10px;}
+  nav .toc{display:flex;flex-wrap:wrap;gap:10px;}
+  nav a{display:inline-block;background:var(--blue-light);color:var(--blue-dark);padding:8px 16px;border-radius:22px;text-decoration:none;font-size:15px;font-weight:600;transition:.15s;}
+  nav a:hover{background:var(--blue);color:#fff;}
+  section{margin-top:38px;}
+  .sec-title{font-size:25px;color:var(--blue-dark);font-weight:700;padding:13px 18px;background:linear-gradient(90deg,var(--blue-light),#fff);border-left:6px solid var(--blue);border-radius:6px;margin-bottom:16px;}
+  .sec-title .num{color:var(--accent);margin-right:6px;}
+  .sec-title .cnt{font-size:14px;color:var(--muted);font-weight:400;margin-left:8px;}
+  .tips{background:#fff8f0;border:1px solid #f3ddc0;border-radius:14px;padding:22px;margin:24px 0;}
+  .tips h3{color:#b25c14;font-size:19px;margin-bottom:12px;}
+  .tips ul{padding-left:20px;}
+  .tips li{margin-bottom:8px;}
+  .tips b{color:#b25c14;}
+  .card{background:#fff;border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:12px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 8px rgba(15,76,129,.04);}
+  .card h3{font-size:20px;color:var(--blue-dark);margin-bottom:10px;}
+  .card h3 .tag{display:inline-block;font-size:12px;font-weight:600;background:var(--blue-light);color:var(--blue);border-radius:5px;padding:2px 9px;margin-left:8px;vertical-align:middle;}
+  .card .ing{font-size:15px;color:#374151;margin-bottom:10px;background:#f6f9fc;border-radius:8px;padding:10px 14px;}
+  .card .ing b{color:var(--blue-dark);}
+  .card .steps{font-size:16px;color:#374151;}
+  .card ol{padding-left:22px;margin:4px 0 6px;}
+  .card ol li{margin-bottom:5px;}
+  .card .meta{display:inline-block;background:#eef7ef;color:#2e7d32;font-size:14px;font-weight:600;border-radius:6px;padding:3px 12px;margin-top:8px;}
+  .card .tip{background:#f6fbff;border-left:3px solid var(--accent);border-radius:4px;padding:9px 13px;font-size:14px;color:#4a5568;margin-top:10px;}
+  .card .tip b{color:var(--accent);}
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:44px;line-height:2;}
+  @media print{header{background:#0F4C81!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;} .card{break-inside:avoid;} }
+</style>
+</head>
+<body>
+<header>
+  <h1>蒸菜大全</h1>
+  <p>零油烟 · 原汁原味 · 营养不流失 · 新手零失败</p>
+  <span class="badge">10 大类 · 67 道详细做法 · 食材 / 步骤 / 时间 / 技巧一应俱全</span>
+</header>
+
+<div class="wrap">
+
+<nav>
+  <h2>📑 目录（点击快速跳转）</h2>
+  <div class="toc">
+    <a href="#s1">猪肉</a><a href="#s2">牛羊</a><a href="#s3">家禽</a>
+    <a href="#s4">蛋类</a><a href="#s5">鱼类</a><a href="#s6">虾蟹贝海鲜</a>
+    <a href="#s7">蔬菜菌菇</a><a href="#s8">豆制品</a><a href="#s9">主食点心</a>
+    <a href="#s10">汤羹滋补</a>
+  </div>
+</nav>
+
+<div class="tips">
+  <h3>🔥 蒸菜万能通用技巧（先看这个，成功率翻倍）</h3>
+  <ul>
+    <li><b>水开再上锅：</b>绝大多数蒸菜要等蒸锅水烧开、上汽后再放食材，大火快蒸，鲜嫩不发柴。</li>
+    <li><b>蒸鱼倒汤去腥：</b>鱼蒸好后盘里的腥水一定要倒掉，再淋蒸鱼豉油、泼热油，是清蒸鱼好吃的关键。</li>
+    <li><b>蒸蛋黄金比例：</b>蛋液 : 温水 = 1 : 1.5，用 40~50℃ 温水，过筛去沫，盖保鲜膜扎孔，小火蒸，零蜂窝。</li>
+    <li><b>蒜蓉「金银蒜」：</b>蒜末分两半，一半小火炸金黄，再拌入另一半生蒜，香味层次翻倍。</li>
+    <li><b>关火焖几分钟：</b>蒸馒头、包子、蒸蛋、蒸鱼等，关火后焖 3~5 分钟再揭盖，防回缩、更入味。</li>
+    <li><b>腌制入底味：</b>蒸肉蒸排骨提前腌 30 分钟以上，裹粉前加一勺油锁水，蒸出来才嫩。</li>
+    <li><b>酱油最后淋：</b>蒸鱼豉油、生抽出锅后再淋，久蒸会发酸、颜色变暗。</li>
+    <li><b>粉蒸垫根茎：</b>粉蒸菜垫红薯/土豆/南瓜/芋头，吸油解腻，比肉还抢手。</li>
+  </ul>
+</div>
+
+<!-- 01 猪肉 -->
+<section id="s1">
+  <div class="sec-title"><span class="num">01</span>猪肉类<span class="cnt">解馋滋补</span></div>
+
+  <div class="card">
+    <h3>粉蒸肉<span class="tag">招牌</span></h3>
+    <div class="ing"><b>食材：</b>五花肉 500g、蒸肉米粉 1 包、红薯/南瓜、姜蒜、生抽、老抽、蚝油、料酒、白糖、腐乳汁。</div>
+    <div class="steps"><ol>
+      <li>五花肉切 0.5cm 厚片，加姜蒜末、生抽、老抽、蚝油、料酒、白糖、腐乳汁抓匀，腌 30 分钟。</li>
+      <li>逐片裹上蒸肉米粉，碗底铺红薯/南瓜块，肉片皮朝下码整齐。</li>
+      <li>水开大火蒸 40~60 分钟，关火焖 5 分钟，倒扣大盘撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 40~60 分钟</span>
+    <div class="tip"><b>小技巧：</b>腐乳汁是灵魂；垫根茎类吸油解腻，比肉还受欢迎。</div>
+  </div>
+
+  <div class="card">
+    <h3>豉汁蒸排骨</h3>
+    <div class="ing"><b>食材：</b>肋排 500g、豆豉 1 勺、蒜末、姜、生抽、蚝油、料酒、淀粉、白糖。</div>
+    <div class="steps"><ol>
+      <li>肋排冷水泡 20 分钟去血水，沥干；豆豉和蒜末小火炒香。</li>
+      <li>排骨加炒好的豆豉蒜、生抽、蚝油、料酒、白糖、淀粉抓匀腌 30 分钟。</li>
+      <li>水开大火蒸 15~20 分钟（或垫芋头蒸 40 分钟）。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 15~20 分钟</span>
+    <div class="tip"><b>小技巧：</b>豆豉蒜末先炒香再腌，豉香才浓郁；淀粉锁住肉汁。</div>
+  </div>
+
+  <div class="card">
+    <h3>粉蒸排骨</h3>
+    <div class="ing"><b>食材：</b>肋排 500g、蒸肉米粉 1 包、红薯/土豆、生抽、老抽、蚝油、料酒、姜蒜。</div>
+    <div class="steps"><ol>
+      <li>排骨冷水泡去血水，加姜蒜末、生抽、老抽、蚝油、料酒腌 30 分钟。</li>
+      <li>裹蒸肉米粉，垫红薯/土豆块铺盘。</li>
+      <li>水开大火蒸 50~60 分钟，出锅撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 50~60 分钟</span>
+    <div class="tip"><b>小技巧：</b>排骨选带点肥的肋排，蒸出来才不柴；垫料吸了肉汁比肉还香。</div>
+  </div>
+
+  <div class="card">
+    <h3>萝卜蒸肉</h3>
+    <div class="ing"><b>食材：</b>白萝卜 1 根、肉末 250g、葱姜、生抽、蚝油、料酒、淀粉。</div>
+    <div class="steps"><ol>
+      <li>萝卜切连刀片（两片中间不切断），肉末加葱姜、调味料、淀粉拌成馅。</li>
+      <li>肉馅夹入萝卜片间，码盘。</li>
+      <li>水开大火蒸 20 分钟，淋豉油泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 20 分钟</span>
+    <div class="tip"><b>小技巧：</b>萝卜蒸后清甜多汁，正好解肉的腻，是经典下饭菜。</div>
+  </div>
+
+  <div class="card">
+    <h3>咸肉蒸冬瓜</h3>
+    <div class="ing"><b>食材：</b>咸肉 150g、冬瓜 400g、姜丝、葱花。</div>
+    <div class="steps"><ol>
+      <li>咸肉切薄片，冬瓜去皮切厚片。</li>
+      <li>冬瓜垫底、咸肉铺面，撒姜丝，一层叠一层码盘。</li>
+      <li>水开中火蒸 20 分钟，撒葱花，咸肉本身有咸味可不再加盐。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 20 分钟</span>
+    <div class="tip"><b>小技巧：</b>咸肉出油出味，冬瓜吸了咸鲜汁，清爽又下饭。</div>
+  </div>
+
+  <div class="card">
+    <h3>黄豆酱蒸肉</h3>
+    <div class="ing"><b>食材：</b>五花肉 400g、黄豆酱 2 勺、姜蒜、生抽、料酒、白糖、淀粉、葱花。</div>
+    <div class="steps"><ol>
+      <li>五花肉切薄片，加黄豆酱、姜蒜末、生抽、料酒、白糖、淀粉抓匀，腌 20 分钟。</li>
+      <li>铺入盘中，水开大火蒸 25~30 分钟。</li>
+      <li>出锅撒葱花即可。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 25~30 分钟</span>
+    <div class="tip"><b>小技巧：</b>黄豆酱咸香浓郁，本身够咸，少放或不放盐；拌点淀粉锁水更嫩。</div>
+  </div>
+
+  <div class="card">
+    <h3>香蒸猪手</h3>
+    <div class="ing"><b>食材：</b>猪手 1 只（约 600g）、姜片、葱、八角、桂皮、香叶、生抽、老抽、料酒、冰糖、盐。</div>
+    <div class="steps"><ol>
+      <li>猪手斩块焯水去沫，加姜葱、八角、桂皮、香叶、生抽、老抽、料酒、冰糖、盐拌匀腌 30 分钟。</li>
+      <li>入深盘，水开中火蒸 90 分钟至软烂脱骨。</li>
+      <li>出锅撒葱花即可。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 90 分钟</span>
+    <div class="tip"><b>小技巧：</b>选前蹄（猪手）肉厚口感好；先焯水去腥，久蒸才软糯、胶质足，比红烧更清爽不腻。</div>
+  </div>
+
+  <div class="card">
+    <h3>番茄蒸肉盅</h3>
+    <div class="ing"><b>食材：</b>大番茄 4 个、肉末 250g、葱姜、生抽、蚝油、料酒、淀粉、盐。</div>
+    <div class="steps"><ol>
+      <li>番茄顶部切开当盖，挖去内瓤成盅（瓤剁碎备用）。</li>
+      <li>肉末加葱姜末、生抽、蚝油、料酒、淀粉、盐和剁碎的番茄瓤拌成馅，填入番茄盅。</li>
+      <li>盖回番茄盖，水开中火蒸 20 分钟。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 20 分钟</span>
+    <div class="tip"><b>小技巧：</b>番茄酸甜汁渗进肉馅鲜香开胃；挖出的果肉可拌进肉馅，也可炒成汤汁勾芡淋在盅上，更入味。</div>
+  </div>
+
+  <div class="card">
+    <h3>南瓜粉蒸肉</h3>
+    <div class="ing"><b>食材：</b>五花肉 400g、蒸肉米粉 1 包、南瓜 300g、姜蒜、生抽、老抽、蚝油、料酒、白糖。</div>
+    <div class="steps"><ol>
+      <li>五花肉切厚片，加姜蒜末、生抽、老抽、蚝油、料酒、白糖腌 30 分钟，裹蒸肉米粉。</li>
+      <li>南瓜去皮切块铺碗底，肉片码在上面。</li>
+      <li>水开大火蒸 50 分钟，倒扣装盘撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 50 分钟</span>
+    <div class="tip"><b>小技巧：</b>南瓜清甜吸油，垫底比红薯更甜糯；南瓜别切太薄，蒸久了才绵。</div>
+  </div>
+
+  <div class="card">
+    <h3>小土豆蒸排骨</h3>
+    <div class="ing"><b>食材：</b>肋排 500g、小土豆 300g、姜蒜、生抽、蚝油、料酒、白糖、淀粉、葱花。</div>
+    <div class="steps"><ol>
+      <li>排骨泡去血水，加姜蒜末、生抽、蚝油、料酒、白糖、淀粉抓匀腌 30 分钟。</li>
+      <li>小土豆（不去皮）洗净铺盘底，排骨码在上面。</li>
+      <li>水开大火蒸 40 分钟，撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 40 分钟</span>
+    <div class="tip"><b>小技巧：</b>小土豆带皮蒸更香糯，吸满排骨汁；排骨腌够时间才入味。</div>
+  </div>
+
+  <div class="card">
+    <h3>丝瓜蒸肉片</h3>
+    <div class="ing"><b>食材：</b>丝瓜 2 根、猪里脊 200g、姜蒜、生抽、蚝油、料酒、淀粉、盐、葱花。</div>
+    <div class="steps"><ol>
+      <li>丝瓜去皮切滚刀块铺盘；里脊切薄片加料酒、生抽、淀粉抓匀。</li>
+      <li>肉片铺丝瓜上，撒姜蒜末。</li>
+      <li>水开大火蒸 8~10 分钟，淋豉油泼热油，撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8~10 分钟</span>
+    <div class="tip"><b>小技巧：</b>肉片加淀粉抓才嫩；丝瓜清甜多汁，与肉片同蒸清爽不腻。</div>
+  </div>
+</section>
+
+<!-- 02 牛羊 -->
+<section id="s2">
+  <div class="sec-title"><span class="num">02</span>牛羊肉类<span class="cnt">温补御寒</span></div>
+
+  <div class="card">
+    <h3>粉蒸牛肉<span class="tag">招牌</span></h3>
+    <div class="ing"><b>食材：</b>嫩牛肉 350g、蒸肉米粉 90g、豆瓣酱、葱姜、料酒、生抽、荷叶。</div>
+    <div class="steps"><ol>
+      <li>牛肉切 0.5cm 薄片，泡水 10 分钟冲净沥干。</li>
+      <li>加剁碎的豆瓣酱、葱姜、料酒、生抽腌 15 分钟，裹蒸肉米粉。</li>
+      <li>垫焯水荷叶，水开大火蒸 8 分钟即可。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8 分钟</span>
+    <div class="tip"><b>小技巧：</b>牛肉蒸的时间宁短勿长，8 分钟最嫩；垫荷叶清香不腻。</div>
+  </div>
+
+  <div class="card">
+    <h3>金针菇肥牛卷</h3>
+    <div class="ing"><b>食材：</b>肥牛卷 250g、金针菇 1 把、蒜末、生抽、蚝油、白糖、葱花。</div>
+    <div class="steps"><ol>
+      <li>金针菇去根，用肥牛片卷起，码入盘中。</li>
+      <li>调汁：蒜末、生抽、蚝油、白糖、少许水拌匀，淋在肥牛卷上。</li>
+      <li>水开大火蒸 8 分钟，撒葱花泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8 分钟</span>
+    <div class="tip"><b>小技巧：</b>肥牛本身易熟，蒸 8 分钟足够；蒜蓉汁是灵魂。</div>
+  </div>
+
+  <div class="card">
+    <h3>白萝卜蒸牛腩</h3>
+    <div class="ing"><b>食材：</b>牛腩 500g、白萝卜 1 根、姜片、八角、生抽、老抽、料酒、盐。</div>
+    <div class="steps"><ol>
+      <li>牛腩切块焯水去沫，萝卜切滚刀块。</li>
+      <li>牛腩加姜片、八角、生抽、老抽、料酒拌匀，与萝卜一起入炖盅。</li>
+      <li>水开中火蒸 60 分钟至牛腩软烂，加盐调味。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 60 分钟</span>
+    <div class="tip"><b>小技巧：</b>牛腩先焯水去血沫；萝卜吸了牛腩汁，鲜甜软烂。</div>
+  </div>
+
+  <div class="card">
+    <h3>清蒸羊肉</h3>
+    <div class="ing"><b>食材：</b>羊腿肉 500g、葱段、姜片、花椒、料酒、盐、蘸料（蒜泥/椒盐）。</div>
+    <div class="steps"><ol>
+      <li>羊肉切块，冷水泡去血水，加葱姜、花椒、料酒、盐腌 30 分钟。</li>
+      <li>入深盘，水开中火蒸 40 分钟至软烂。</li>
+      <li>出锅蘸蒜泥或椒盐吃，清淡原味。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 40 分钟</span>
+    <div class="tip"><b>小技巧：</b>羊肉泡水去血水能减少膻味；蒸比煮更锁住鲜味。</div>
+  </div>
+
+  <div class="card">
+    <h3>萝卜羊肉汤（隔水蒸炖）</h3>
+    <div class="ing"><b>食材：</b>羊肉 400g、白萝卜 1 根、姜片、葱段、料酒、盐、白胡椒。</div>
+    <div class="steps"><ol>
+      <li>羊肉焯水去沫，萝卜切块。</li>
+      <li>羊肉、萝卜、姜片、葱段入炖盅，加水没过，隔水蒸炖 90 分钟。</li>
+      <li>出锅加盐、白胡椒粉调味。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 90 分钟</span>
+    <div class="tip"><b>小技巧：</b>隔水炖比直接煮更清甜，汤色清亮，萝卜羊肉是温补经典。</div>
+  </div>
+
+  <div class="card">
+    <h3>娃娃菜蒸牛肉</h3>
+    <div class="ing"><b>食材：</b>嫩牛肉 300g、娃娃菜 1 棵、姜蒜、生抽、蚝油、料酒、淀粉、白糖、葱花。</div>
+    <div class="steps"><ol>
+      <li>牛肉逆纹切薄片，加姜蒜末、生抽、蚝油、料酒、淀粉、白糖抓匀腌 20 分钟。</li>
+      <li>娃娃菜铺盘底，牛肉片铺上面。</li>
+      <li>水开大火蒸 8~10 分钟，撒葱花泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8~10 分钟</span>
+    <div class="tip"><b>小技巧：</b>牛肉逆纹切、薄片、加淀粉抓，蒸出来才嫩；娃娃菜垫底吸肉汁鲜甜。</div>
+  </div>
+
+  <div class="card">
+    <h3>腐竹蒸牛肉</h3>
+    <div class="ing"><b>食材：</b>嫩牛肉 300g、腐竹 100g、姜蒜、生抽、蚝油、料酒、淀粉、白糖、葱花。</div>
+    <div class="steps"><ol>
+      <li>腐竹提前泡软切段铺盘底。</li>
+      <li>牛肉切薄片加姜蒜末、生抽、蚝油、料酒、淀粉、白糖腌 20 分钟，铺在腐竹上。</li>
+      <li>水开大火蒸 8~10 分钟，撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8~10 分钟</span>
+    <div class="tip"><b>小技巧：</b>腐竹吸饱牛肉汁，软嫩入味；牛肉别蒸久，老了发柴。</div>
+  </div>
+</section>
+
+<!-- 03 家禽 -->
+<section id="s3">
+  <div class="sec-title"><span class="num">03</span>家禽类（鸡鸭鹅鸽）<span class="cnt">鲜嫩多汁</span></div>
+
+  <div class="card">
+    <h3>豉汁蒸凤爪</h3>
+    <div class="ing"><b>食材：</b>鸡爪 500g、豆豉、蒜末、生抽、蚝油、料酒、白糖、淀粉。</div>
+    <div class="steps"><ol>
+      <li>鸡爪剪指甲，焯水后沥干，油锅炸至表皮金黄（可省略），再泡冰水。</li>
+      <li>加豆豉、蒜末、生抽、蚝油、料酒、白糖、淀粉抓匀腌 30 分钟。</li>
+      <li>水开大火蒸 40 分钟至软烂脱骨。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 40 分钟</span>
+    <div class="tip"><b>小技巧：</b>先炸后蒸是广式凤爪"虎皮软烂"的秘诀；蒸够时间才脱骨。</div>
+  </div>
+
+  <div class="card">
+    <h3>板栗蒸鸡</h3>
+    <div class="ing"><b>食材：</b>鸡块 400g、板栗 200g、姜片、生抽、蚝油、料酒、白糖。</div>
+    <div class="steps"><ol>
+      <li>鸡块加姜片、生抽、蚝油、料酒、白糖腌 20 分钟。</li>
+      <li>板栗（去壳）铺盘底，鸡块铺上面。</li>
+      <li>水开大火蒸 30 分钟，撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 30 分钟</span>
+    <div class="tip"><b>小技巧：</b>板栗吸了鸡汁粉糯香甜，比肉还受欢迎。</div>
+  </div>
+
+  <div class="card">
+    <h3>清蒸乌鸡（滋补）</h3>
+    <div class="ing"><b>食材：</b>乌鸡半只、当归、枸杞、红枣、姜片、料酒、盐。</div>
+    <div class="steps"><ol>
+      <li>乌鸡切块焯水去沫，入炖盅。</li>
+      <li>加当归、枸杞、红枣、姜片、料酒和清水，隔水蒸炖 60 分钟。</li>
+      <li>出锅加盐调味。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 60 分钟</span>
+    <div class="tip"><b>小技巧：</b>乌鸡配当归红枣是经典补气血组合，适合秋冬进补。</div>
+  </div>
+
+  <div class="card">
+    <h3>三鲜鸡丝</h3>
+    <div class="ing"><b>食材：</b>鸡胸肉 300g、香菇 5 朵、火腿 50g、冬笋/胡萝卜、姜丝、生抽、蚝油、料酒、淀粉、盐。</div>
+    <div class="steps"><ol>
+      <li>鸡胸肉切丝加料酒、淀粉抓匀；香菇、火腿、冬笋切丝。</li>
+      <li>三丝加姜丝、生抽、蚝油、盐拌匀铺盘，鸡丝铺上面。</li>
+      <li>水开大火蒸 10~12 分钟，淋豉油泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10~12 分钟</span>
+    <div class="tip"><b>小技巧：</b>鸡丝加淀粉抓过才嫩；三鲜（香菇火腿笋）提鲜，清清爽爽。</div>
+  </div>
+
+  <div class="card">
+    <h3>菌菇番茄蒸鸡翅</h3>
+    <div class="ing"><b>食材：</b>鸡翅中 500g、香菇/白玉菇 100g、番茄 1 个、姜蒜、生抽、蚝油、料酒、白糖、淀粉。</div>
+    <div class="steps"><ol>
+      <li>鸡翅对半剪开，加姜蒜末、生抽、蚝油、料酒、白糖、淀粉抓匀腌 30 分钟。</li>
+      <li>菌菇、番茄切块铺盘底，鸡翅铺上面。</li>
+      <li>水开大火蒸 30 分钟，撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 30 分钟</span>
+    <div class="tip"><b>小技巧：</b>鸡翅对半剪更入味易熟；番茄菌菇出汁，鸡翅吸了酸甜汁开胃。</div>
+  </div>
+</section>
+
+<!-- 04 蛋类 -->
+<section id="s4">
+  <div class="sec-title"><span class="num">04</span>蛋类<span class="cnt">嫩滑快手</span></div>
+
+  <div class="card">
+    <h3>水蒸蛋（鸡蛋羹）<span class="tag">招牌</span></h3>
+    <div class="ing"><b>食材：</b>鸡蛋 3 个、40~50℃ 温水（蛋液 1.5 倍）、盐、生抽、香油、葱花。</div>
+    <div class="steps"><ol>
+      <li>鸡蛋打散，加温水和少许盐，轻搅少起泡。</li>
+      <li>过筛去沫，盖保鲜膜扎小孔（或盖盘子）。</li>
+      <li>水开后放入，中小火蒸 8~12 分钟，关火焖 2~3 分钟，淋生抽香油葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8~12 分钟</span>
+    <div class="tip"><b>小技巧：</b>温水＋小火＋盖膜，三样缺一不可，蜂窝气孔就是没做好这几点。</div>
+  </div>
+
+  <div class="card">
+    <h3>虾仁蒸蛋</h3>
+    <div class="ing"><b>食材：</b>鸡蛋 3 个、虾仁 100g、温水、盐、生抽、料酒、白胡椒。</div>
+    <div class="steps"><ol>
+      <li>虾仁用料酒、白胡椒腌一下；蛋液加温水调好过筛。</li>
+      <li>先蒸蛋液，待半凝固时放入虾仁（约 5 分钟时）。</li>
+      <li>继续蒸至全熟（共 12 分钟），淋生抽。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 12 分钟</span>
+    <div class="tip"><b>小技巧：</b>虾仁半凝固时再放，就不会沉底，成品漂亮。</div>
+  </div>
+
+  <div class="card">
+    <h3>肉末蒸蛋</h3>
+    <div class="ing"><b>食材：</b>鸡蛋 3 个、肉末 100g、姜蒜、生抽、蚝油、淀粉、温水。</div>
+    <div class="steps"><ol>
+      <li>蛋液加温水调好，过筛盖膜蒸至基本凝固。</li>
+      <li>肉末加姜蒜、生抽、蚝油炒香（可勾薄芡）。</li>
+      <li>肉末酱浇在蒸好的蛋羹上，再蒸 2 分钟入味。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 15 分钟</span>
+    <div class="tip"><b>小技巧：</b>肉末炒香再浇，比直接一起蒸更香浓；蛋羹和肉酱分层口感好。</div>
+  </div>
+
+  <div class="card">
+    <h3>南瓜蒸蛋</h3>
+    <div class="ing"><b>食材：</b>小南瓜 1 个、鸡蛋 2 个、温水、盐、生抽。</div>
+    <div class="steps"><ol>
+      <li>南瓜顶部切开当盖，挖去籽瓤成盅。</li>
+      <li>蛋液加温水调匀过筛，倒进南瓜盅，盖回南瓜盖。</li>
+      <li>水开中火蒸 20 分钟，淋生抽。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 20 分钟</span>
+    <div class="tip"><b>小技巧：</b>南瓜的清甜渗进蛋羹，好看又好吃；南瓜蒸得久些才软糯。</div>
+  </div>
+
+  <div class="card">
+    <h3>牛奶蛋羹</h3>
+    <div class="ing"><b>食材：</b>鸡蛋 2 个、牛奶 150ml、白糖少许。</div>
+    <div class="steps"><ol>
+      <li>鸡蛋打散，加牛奶和少许白糖调匀，过筛。</li>
+      <li>倒入碗中盖膜，水开小火蒸 10 分钟。</li>
+      <li>冷藏后食用口感更佳（甜口嫩滑）。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10 分钟</span>
+    <div class="tip"><b>小技巧：</b>用牛奶代替水，奶香嫩滑，是大人小孩都爱的甜口蛋羹。</div>
+  </div>
+
+  <div class="card">
+    <h3>西兰花蒸蛋</h3>
+    <div class="ing"><b>食材：</b>鸡蛋 3 个、西兰花 100g、温水、盐、生抽、香油。</div>
+    <div class="steps"><ol>
+      <li>西兰花切小朵焯水；蛋液加温水调匀过筛，盖膜蒸至半凝固。</li>
+      <li>摆上西兰花，继续蒸至全熟（共约 12 分钟）。</li>
+      <li>淋生抽、香油即可。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 12 分钟</span>
+    <div class="tip"><b>小技巧：</b>西兰花先焯水去涩；半凝固时摆花不沉底，成品绿白相间好看。</div>
+  </div>
+
+  <div class="card">
+    <h3>姜汁炖蛋</h3>
+    <div class="ing"><b>食材：</b>鸡蛋 2 个、姜汁、红糖、温水。</div>
+    <div class="steps"><ol>
+      <li>姜磨汁，红糖温水化开，与蛋液调匀过筛。</li>
+      <li>盖膜，水开小火蒸 12 分钟。</li>
+      <li>趁热吃。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 12 分钟</span>
+    <div class="tip"><b>小技巧：</b>姜汁红糖驱寒暖胃，感冒或经期时吃很舒服。</div>
+  </div>
+</section>
+
+<!-- 05 鱼类 -->
+<section id="s5">
+  <div class="sec-title"><span class="num">05</span>鱼类<span class="cnt">鲜嫩低脂</span></div>
+
+  <div class="card">
+    <h3>清蒸鲈鱼<span class="tag">招牌</span></h3>
+    <div class="ing"><b>食材：</b>鲈鱼 1 条、姜、葱、料酒、盐、蒸鱼豉油、食用油。</div>
+    <div class="steps"><ol>
+      <li>鲈鱼洗净两面划刀，抹盐料酒、塞姜葱腌 10 分钟。</li>
+      <li>盘底铺姜葱放鱼，水开大火蒸 8~10 分钟。</li>
+      <li>倒掉腥水，夹掉姜葱，铺新葱丝红椒丝，淋蒸鱼豉油，泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8~10 分钟</span>
+    <div class="tip"><b>小技巧：</b>倒腥水＋泼热油是清蒸鱼好吃的关键；筷子戳鱼背最厚处能插透即熟。</div>
+  </div>
+
+  <div class="card">
+    <h3>剁椒鱼头</h3>
+    <div class="ing"><b>食材：</b>胖头鱼鱼头 1 个、剁椒 3 勺、姜蒜末、料酒、生抽、葱花。</div>
+    <div class="steps"><ol>
+      <li>鱼头洗净对半剖开，抹料酒、盐腌 10 分钟。</li>
+      <li>盘底垫筷子或姜葱，鱼头铺上，盖满剁椒和姜蒜末。</li>
+      <li>水开大火蒸 8~10 分钟，撒葱花泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8~10 分钟</span>
+    <div class="tip"><b>小技巧：</b>垫筷子让鱼头受热均匀；剁椒炒香再铺，辣香更足。</div>
+  </div>
+
+  <div class="card">
+    <h3>清蒸武昌鱼</h3>
+    <div class="ing"><b>食材：</b>武昌鱼 1 条、姜、葱、料酒、盐、蒸鱼豉油、红椒丝。</div>
+    <div class="steps"><ol>
+      <li>武昌鱼洗净，开屏切法（腹连背不切断）摆盘，抹盐料酒、铺姜葱腌 10 分钟。</li>
+      <li>水开大火蒸 10 分钟。</li>
+      <li>倒腥水，铺葱丝红椒丝，淋豉油泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10 分钟</span>
+    <div class="tip"><b>小技巧：</b>开屏摆盘好看又入味；武昌鱼是湖北名鱼，肉质细嫩。</div>
+  </div>
+
+  <div class="card">
+    <h3>清蒸鳕鱼</h3>
+    <div class="ing"><b>食材：</b>鳕鱼块 300g、姜丝、葱丝、料酒、蒸鱼豉油、柠檬（可选）。</div>
+    <div class="steps"><ol>
+      <li>鳕鱼解冻擦干，抹料酒铺姜丝腌 10 分钟。</li>
+      <li>水开大火蒸 10 分钟。</li>
+      <li>倒腥水，铺葱丝，淋豉油泼热油（挤点柠檬汁更清新）。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10 分钟</span>
+    <div class="tip"><b>小技巧：</b>鳕鱼细嫩，蒸的时间别过长；柠檬汁去腥提鲜。</div>
+  </div>
+
+  <div class="card">
+    <h3>花椒蒸鱼片</h3>
+    <div class="ing"><b>食材：</b>无刺鱼片（巴沙鱼/黑鱼）300g、花椒、姜丝、料酒、盐、蒸鱼豉油。</div>
+    <div class="steps"><ol>
+      <li>鱼片抹盐、料酒、姜丝腌 10 分钟，铺盘。</li>
+      <li>撒花椒，水开大火蒸 7 分钟。</li>
+      <li>淋豉油，撒葱花泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 7 分钟</span>
+    <div class="tip"><b>小技巧：</b>鱼片薄、无刺，蒸 7 分钟即熟；花椒麻香提味。</div>
+  </div>
+
+  <div class="card">
+    <h3>粉蒸鳝鱼（湖北风味）</h3>
+    <div class="ing"><b>食材：</b>鳝鱼 400g、蒸肉米粉、姜蒜、生抽、蚝油、料酒、胡椒粉、醋。</div>
+    <div class="steps"><ol>
+      <li>鳝鱼处理干净切段，加姜蒜末、生抽、蚝油、料酒、胡椒粉、少许醋腌 20 分钟。</li>
+      <li>裹蒸肉米粉，码盘。</li>
+      <li>水开大火蒸 15 分钟，撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 15 分钟</span>
+    <div class="tip"><b>小技巧：</b>加一点醋去腥提鲜；鳝鱼粉蒸是湖北沔阳三蒸的代表之一。</div>
+  </div>
+
+  <div class="card">
+    <h3>柠檬蒸鲈鱼</h3>
+    <div class="ing"><b>食材：</b>鲈鱼 1 条、柠檬 1 个、姜、葱、料酒、蒸鱼豉油。</div>
+    <div class="steps"><ol>
+      <li>鲈鱼抹料酒腌 10 分钟，柠檬切片铺在鱼身和盘底。</li>
+      <li>水开大火蒸 10 分钟。</li>
+      <li>倒腥水，铺葱丝淋豉油，挤柠檬汁，泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10 分钟</span>
+    <div class="tip"><b>小技巧：</b>柠檬的果香清新去腥，比单纯姜葱更开胃，适合夏天。</div>
+  </div>
+
+  <div class="card">
+    <h3>豉汁蒸黄骨鱼</h3>
+    <div class="ing"><b>食材：</b>黄骨鱼 4 条、豆豉、蒜末、姜丝、生抽、蚝油、料酒。</div>
+    <div class="steps"><ol>
+      <li>黄骨鱼处理干净，抹料酒铺姜丝腌 10 分钟。</li>
+      <li>豆豉蒜末炒香，加生抽、蚝油调汁，淋在鱼身。</li>
+      <li>水开大火蒸 10 分钟，撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10 分钟</span>
+    <div class="tip"><b>小技巧：</b>黄骨鱼肉质滑嫩少刺，豉汁蒸特别入味，适合孩子吃。</div>
+  </div>
+
+  <div class="card">
+    <h3>清蒸鱼头</h3>
+    <div class="ing"><b>食材：</b>胖头鱼鱼头 1 个、姜、葱、料酒、盐、蒸鱼豉油、红椒丝。</div>
+    <div class="steps"><ol>
+      <li>鱼头洗净对半剖开，抹料酒、盐、铺姜葱腌 10 分钟。</li>
+      <li>盘底垫姜葱放鱼头，水开大火蒸 10 分钟。</li>
+      <li>倒腥水，铺葱丝红椒丝，淋蒸鱼豉油泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10 分钟</span>
+    <div class="tip"><b>小技巧：</b>与剁椒鱼头不同，清蒸吃鱼头本味；倒腥水泼热油是关键。</div>
+  </div>
+
+  <div class="card">
+    <h3>清蒸草鱼</h3>
+    <div class="ing"><b>食材：</b>草鱼 1 条、甜椒、姜、葱、料酒、盐、蒸鱼豉油、食用油。</div>
+    <div class="steps"><ol>
+      <li>草鱼处理干净两面打花刀，用料酒、盐、姜片、葱段腌 10~15 分钟去腥。</li>
+      <li>蒸盘底铺姜片葱段放鱼，鱼身铺姜丝，水开大火蒸 8~10 分钟（视大小）。</li>
+      <li>倒腥水去姜葱，撒甜椒丝葱丝，淋蒸鱼豉油泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8~10 分钟</span>
+    <div class="tip"><b>小技巧：</b>草鱼刺较多，适合大人吃；倒腥水泼热油是清蒸鱼通用关键。</div>
+  </div>
+
+  <div class="card">
+    <h3>啤酒蒸带鱼</h3>
+    <div class="ing"><b>食材：</b>带鱼 600g、啤酒 1 罐、姜、葱、糖、蒸鱼豉油、蚝油、生抽、香油、红椒丝。</div>
+    <div class="steps"><ol>
+      <li>带鱼去腹内黑膜洗净打花刀，用啤酒和糖浸泡 10~15 分钟去腥。</li>
+      <li>蒸鱼豉油、蚝油、生抽调成料汁；盘底铺葱段姜片，放上带鱼。</li>
+      <li>水开大火蒸 15 分钟，倒腥水，撒葱丝红椒丝，料汁加香油浇在带鱼上。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 15 分钟</span>
+    <div class="tip"><b>小技巧：</b>啤酒浸泡去腥提鲜是特色；腹内黑膜一定要刮净，否则发苦。</div>
+  </div>
+</section>
+
+<!-- 06 虾蟹贝海鲜 -->
+<section id="s6">
+  <div class="sec-title"><span class="num">06</span>虾蟹贝海鲜类<span class="cnt">鲜掉眉毛</span></div>
+
+  <div class="card">
+    <h3>蒜蓉粉丝蒸虾<span class="tag">招牌</span></h3>
+    <div class="ing"><b>食材：</b>基围虾 300g、粉丝 1 把、蒜末、蒸鱼豉油、糖、盐、料酒、葱花。</div>
+    <div class="steps"><ol>
+      <li>粉丝泡软铺盘底；虾开背去虾线、去头须摆盘。</li>
+      <li>蒜末分两半，一半小火炸金黄，与生蒜混合，加蒸鱼豉油、糖、盐、料酒调蒜蓉酱。</li>
+      <li>蒜蓉酱铺虾背，水开大火蒸 5~8 分钟，撒葱花泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 5~8 分钟</span>
+    <div class="tip"><b>小技巧：</b>虾背开深去虾线不卷曲；金银蒜（生熟各半）香味翻倍，粉丝垫底吸汁比虾还抢手。</div>
+  </div>
+
+  <div class="card">
+    <h3>蒜蓉粉丝蒸扇贝</h3>
+    <div class="ing"><b>食材：</b>扇贝 6 个、粉丝、蒜末、蒸鱼豉油、糖、盐、葱花。</div>
+    <div class="steps"><ol>
+      <li>扇贝刷净去泥沙，留半壳；粉丝泡软放壳上，铺扇贝肉。</li>
+      <li>金银蒜调成蒜蓉酱，铺在扇贝上。</li>
+      <li>水开大火蒸 5~9 分钟，撒葱花泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 5~9 分钟</span>
+    <div class="tip"><b>小技巧：</b>金银蒜提香；扇贝别蒸久，肉老就可惜了。</div>
+  </div>
+
+  <div class="card">
+    <h3>蒜蓉蒸生蚝</h3>
+    <div class="ing"><b>食材：</b>生蚝 8 个、蒜末、小米椒、蒸鱼豉油、糖、盐、葱花。</div>
+    <div class="steps"><ol>
+      <li>生蚝刷净开壳，蚝肉留在壳内。</li>
+      <li>金银蒜加小米椒、蒸鱼豉油、糖、盐调成蒜蓉酱，铺蚝肉上。</li>
+      <li>水开大火蒸 8~10 分钟，撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8~10 分钟</span>
+    <div class="tip"><b>小技巧：</b>生蚝别蒸久，肉质会缩；加点小米椒香辣更过瘾。</div>
+  </div>
+
+  <div class="card">
+    <h3>清蒸大闸蟹</h3>
+    <div class="ing"><b>食材：</b>大闸蟹 4 只、姜片、紫苏/姜丝、香醋、姜末。</div>
+    <div class="steps"><ol>
+      <li>大闸蟹刷净，不用解绑，肚朝上摆入蒸笼，铺姜片（可放紫苏去腥）。</li>
+      <li>水开大火蒸 10~15 分钟（按大小）。</li>
+      <li>蘸料：香醋＋姜末调匀，蘸蟹肉蟹黄吃。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10~15 分钟</span>
+    <div class="tip"><b>小技巧：</b>肚朝上蒸，蟹黄不流失；姜醋是标配蘸料，去寒提鲜。</div>
+  </div>
+
+  <div class="card">
+    <h3>清蒸丝瓜虾仁</h3>
+    <div class="ing"><b>食材：</b>丝瓜 1 根、虾仁 200g、蒜末、蒸鱼豉油、盐。</div>
+    <div class="steps"><ol>
+      <li>丝瓜去皮切段，虾仁腌一下摆在丝瓜上，撒蒜末。</li>
+      <li>水开大火蒸 8 分钟。</li>
+      <li>淋豉油，泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8 分钟</span>
+    <div class="tip"><b>小技巧：</b>丝瓜清甜多汁，虾仁鲜嫩，蒸出来清爽不腻，适合减脂。</div>
+  </div>
+</section>
+
+<!-- 07 蔬菜菌菇 -->
+<section id="s7">
+  <div class="sec-title"><span class="num">07</span>蔬菜菌菇类<span class="cnt">清爽低卡</span></div>
+
+  <div class="card">
+    <h3>蒜蓉蒸茄子<span class="tag">招牌</span></h3>
+    <div class="ing"><b>食材：</b>长茄子 2 根、蒜末、小米椒、生抽、蚝油、糖、盐、食用油。</div>
+    <div class="steps"><ol>
+      <li>茄子洗净切长段，上锅蒸 10~15 分钟至软烂。</li>
+      <li>撕成长条摆盘，淋生抽、蚝油、糖、盐、蒜末调好的汁。</li>
+      <li>烧热油爆香蒜末小米椒，连油浇在茄子上拌匀。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10~15 分钟</span>
+    <div class="tip"><b>小技巧：</b>蒸着吃比炒着吃少吸油，减脂期也能放心吃；先蒸后撕更入味。</div>
+  </div>
+
+  <div class="card">
+    <h3>蒜蓉粉丝蒸娃娃菜</h3>
+    <div class="ing"><b>食材：</b>娃娃菜 2 棵、粉丝 1 把、蒜末、蒸鱼豉油、糖、盐、葱花。</div>
+    <div class="steps"><ol>
+      <li>娃娃菜对半切开，粉丝泡软铺盘底，摆上娃娃菜。</li>
+      <li>金银蒜调成蒜蓉酱，铺在娃娃菜上。</li>
+      <li>水开大火蒸 8~15 分钟，淋豉油撒葱花泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8~15 分钟</span>
+    <div class="tip"><b>小技巧：</b>金银蒜是灵魂；粉丝吸满蒜香汁，经典宴客菜。</div>
+  </div>
+
+  <div class="card">
+    <h3>蒜蓉粉丝蒸丝瓜</h3>
+    <div class="ing"><b>食材：</b>丝瓜 2 根、粉丝、蒜末、蒸鱼豉油、糖、盐。</div>
+    <div class="steps"><ol>
+      <li>丝瓜去皮切段，粉丝泡软垫底，丝瓜段摆上。</li>
+      <li>金银蒜酱铺丝瓜上。</li>
+      <li>水开大火蒸 5~8 分钟，淋豉油泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 5~8 分钟</span>
+    <div class="tip"><b>小技巧：</b>丝瓜蒸出来清甜多汁，蒜蓉粉丝吸汁，鲜掉眉毛。</div>
+  </div>
+
+  <div class="card">
+    <h3>蒸芹菜叶</h3>
+    <div class="ing"><b>食材：</b>芹菜叶 1 把、面粉、蒜末、盐、香油、醋。</div>
+    <div class="steps"><ol>
+      <li>芹菜叶洗净沥干，撒面粉抓匀，让每片叶子裹薄薄一层面粉。</li>
+      <li>铺入蒸笼，水开大火蒸 10 分钟，取出抖散。</li>
+      <li>蒜末、盐、香油、醋调汁蘸食。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10 分钟</span>
+    <div class="tip"><b>小技巧：</b>芹菜叶别扔，裹面蒸着吃清香健康；面粉要薄，抖散才不粘团。</div>
+  </div>
+
+  <div class="card">
+    <h3>粉蒸茼蒿</h3>
+    <div class="ing"><b>食材：</b>茼蒿 1 把、面粉/玉米面、蒜末、盐、香油、醋。</div>
+    <div class="steps"><ol>
+      <li>茼蒿洗净沥干，撒面粉抓匀裹薄粉。</li>
+      <li>水开蒸 8 分钟，取出抖散。</li>
+      <li>蒜末、盐、香油、醋调汁蘸食。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 8 分钟</span>
+    <div class="tip"><b>小技巧：</b>茼蒿裹粉蒸是经典低卡吃法，蘸蒜汁特别香。</div>
+  </div>
+
+  <div class="card">
+    <h3>蒸南瓜</h3>
+    <div class="ing"><b>食材：</b>南瓜 400g、蜂蜜（可选）。</div>
+    <div class="steps"><ol>
+      <li>南瓜去皮去籽切块，码盘。</li>
+      <li>水开中火蒸 15~20 分钟至软糯。</li>
+      <li>可淋蜂蜜食用。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 15~20 分钟</span>
+    <div class="tip"><b>小技巧：</b>南瓜本身清甜，蒸着吃最养胃，也是减脂主食好选择。</div>
+  </div>
+
+  <div class="card">
+    <h3>南瓜蒸百合</h3>
+    <div class="ing"><b>食材：</b>南瓜 300g、鲜百合 100g、冰糖、蜂蜜。</div>
+    <div class="steps"><ol>
+      <li>南瓜去皮切块，百合掰瓣洗净。</li>
+      <li>南瓜垫底，百合铺上，撒冰糖。</li>
+      <li>水开中火蒸 15~18 分钟，淋蜂蜜。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 15~18 分钟</span>
+    <div class="tip"><b>小技巧：</b>百合润肺安神，配南瓜清甜软糯，是养生甜品。</div>
+  </div>
+
+  <div class="card">
+    <h3>蜂蜜蒸萝卜</h3>
+    <div class="ing"><b>食材：</b>白萝卜半根、蜂蜜 2 勺。</div>
+    <div class="steps"><ol>
+      <li>白萝卜切厚片或挖盅，码盘淋蜂蜜。</li>
+      <li>水开中火蒸 20 分钟。</li>
+      <li>连汁一起吃。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 20 分钟</span>
+    <div class="tip"><b>小技巧：</b>萝卜蒸熟润燥化痰，蜂蜜润喉，咳嗽时吃很舒服。</div>
+  </div>
+
+  <div class="card">
+    <h3>山药火腿叠片</h3>
+    <div class="ing"><b>食材：</b>铁棍山药 300g、金华火腿 50g、蜂蜜、葱花（可选）。</div>
+    <div class="steps"><ol>
+      <li>山药去皮，与火腿切成同等大小的长方形片。</li>
+      <li>一片山药盖一片火腿，交替叠放摆盘，盖上保鲜膜。</li>
+      <li>水开中火蒸 20~25 分钟至山药软糯，取出淋蜂蜜即可。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 20~25 分钟</span>
+    <div class="tip"><b>小技巧：</b>火腿本身有咸味，不用再加盐；蜂蜜让山药粉糯口感更丰富，也可不加。</div>
+  </div>
+
+  <div class="card">
+    <h3>肉末蒸冬瓜</h3>
+    <div class="ing"><b>食材：</b>冬瓜 400g、肉末 100g、姜蒜、生抽、蚝油、淀粉、葱花。</div>
+    <div class="steps"><ol>
+      <li>冬瓜去皮切厚片铺盘。</li>
+      <li>肉末加姜蒜、生抽、蚝油炒香，勾薄芡。</li>
+      <li>肉末酱铺冬瓜上，水开大火蒸 15~20 分钟，撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 15~20 分钟</span>
+    <div class="tip"><b>小技巧：</b>冬瓜蒸后清甜多汁，吸了肉末酱汁很下饭；肉末炒香再蒸比生蒸更香。</div>
+  </div>
+
+  <div class="card">
+    <h3>粉蒸土豆</h3>
+    <div class="ing"><b>食材：</b>土豆 500g、五香蒸肉米粉 150g、郫县豆瓣酱 1.5 勺、腐乳汁 1 勺、姜蒜、葱花、盐、食用油、鸡粉（可选）。</div>
+    <div class="steps"><ol>
+      <li>土豆去皮切块，洗去表面淀粉，沥干。</li>
+      <li>加剁细的豆瓣酱、腐乳汁、姜蒜末、葱花、食用油、盐（鸡粉）拌匀，码味 20 分钟。</li>
+      <li>加蒸肉米粉充分拌匀裹匀，蒸笼铺菜叶放土豆，水开中火蒸 35~40 分钟。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 35~40 分钟</span>
+    <div class="tip"><b>小技巧：</b>土豆先洗去淀粉再裹粉，蒸出来粉糯不粘；垫菜叶防粘又增清香。</div>
+  </div>
+
+  <div class="card">
+    <h3>凉拌蒸茄子</h3>
+    <div class="ing"><b>食材：</b>紫皮长茄子 3 根、小葱、香油（胡麻油）、酱油、盐、白糖。</div>
+    <div class="steps"><ol>
+      <li>茄子去蒂整条入蒸锅，隔水蒸 10 分钟左右至筷子能戳透。</li>
+      <li>放凉后撕成长条摆盘。</li>
+      <li>加葱花、香油、酱油、盐、糖拌匀即可。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 10 分钟</span>
+    <div class="tip"><b>小技巧：</b>整条蒸能防止茄子吸收多余水分；凉拌比热拌更清爽，适合夏天。</div>
+  </div>
+</section>
+
+<!-- 08 豆制品 -->
+<section id="s8">
+  <div class="sec-title"><span class="num">08</span>豆制品类<span class="cnt">高蛋白低脂</span></div>
+
+  <div class="card">
+    <h3>肉末蒸豆腐</h3>
+    <div class="ing"><b>食材：</b>内酯豆腐 1 盒、肉末 100g、姜蒜、生抽、蚝油、豆瓣酱、葱花。</div>
+    <div class="steps"><ol>
+      <li>豆腐切块铺盘；肉末加姜蒜、生抽、蚝油、豆瓣酱炒香。</li>
+      <li>肉末铺豆腐上，水开中火蒸 5~15 分钟。</li>
+      <li>出锅倒掉多余水分，淋豉油撒葱花。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 5~15 分钟</span>
+    <div class="tip"><b>小技巧：</b>蒸出的水要倒掉再调味，否则淡而无味；内酯豆腐最嫩。</div>
+  </div>
+
+  <div class="card">
+    <h3>蒜蓉鸡蛋蒸豆腐</h3>
+    <div class="ing"><b>食材：</b>豆腐 1 盒、鸡蛋 2 个、蒜末、生抽、蚝油、葱花。</div>
+    <div class="steps"><ol>
+      <li>豆腐切块铺盘，鸡蛋打散淋在豆腐上。</li>
+      <li>蒜末、生抽、蚝油调汁淋上。</li>
+      <li>水开中火蒸 7 分钟，撒葱花泼热油。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 7 分钟</span>
+    <div class="tip"><b>小技巧：</b>豆腐＋鸡蛋双嫩，蒜香入味，高蛋白低脂快手菜。</div>
+  </div>
+</section>
+
+<!-- 09 主食点心 -->
+<section id="s9">
+  <div class="sec-title"><span class="num">09</span>主食点心类<span class="cnt">一锅搞定</span></div>
+
+  <div class="card">
+    <h3>腊味焖饭（电饭煲）</h3>
+    <div class="ing"><b>食材：</b>大米 2 杯、腊肠 2 根、腊肉、香菇、青菜、生抽、蚝油。</div>
+    <div class="steps"><ol>
+      <li>腊肠腊肉切片，香菇泡发切片；大米淘洗加水（比平时略少）。</li>
+      <li>腊味、香菇铺在米上，按煮饭键。</li>
+      <li>跳闸后焖 5 分钟，加焯水青菜，淋生抽蚝油拌匀。</li>
+    </ol></div>
+    <span class="meta">⏱ 煮饭键（约 30~40 分钟）</span>
+    <div class="tip"><b>小技巧：</b>腊味出油出味，米饭粒粒喷香，一锅出省事又好吃。</div>
+  </div>
+
+  <div class="card">
+    <h3>香菇滑鸡饭（电饭煲）</h3>
+    <div class="ing"><b>食材：</b>大米 2 杯、鸡腿肉 300g、香菇 5 朵、姜、生抽、蚝油、淀粉。</div>
+    <div class="steps"><ol>
+      <li>鸡腿肉切块加生抽、蚝油、姜、淀粉腌 30 分钟。</li>
+      <li>大米加水，饭煮到半熟（水分快收干）时铺鸡块和香菇。</li>
+      <li>继续焖至饭熟，撒葱花拌匀。</li>
+    </ol></div>
+    <span class="meta">⏱ 煮饭键（约 30~40 分钟）</span>
+    <div class="tip"><b>小技巧：</b>饭半熟时再铺鸡肉，鸡汁渗进饭里，肉嫩饭香。</div>
+  </div>
+
+  <div class="card">
+    <h3>广式肠粉</h3>
+    <div class="ing"><b>食材：</b>粘米粉 100g、淀粉 30g、水、鸡蛋、葱花、蒸鱼豉油。</div>
+    <div class="steps"><ol>
+      <li>粘米粉＋淀粉＋水调成稀米浆。</li>
+      <li>平盘刷油，倒薄薄一层米浆，撒葱花或打鸡蛋，入沸水锅蒸 3 分钟。</li>
+      <li>用刮板卷起，淋蒸鱼豉油。</li>
+    </ol></div>
+    <span class="meta">⏱ 每张蒸 3 分钟</span>
+    <div class="tip"><b>小技巧：</b>米浆要薄才爽滑；粉浆配比是肠粉口感的关键。</div>
+  </div>
+</section>
+
+<!-- 10 汤羹滋补 -->
+<section id="s10">
+  <div class="sec-title"><span class="num">10</span>汤羹滋补类<span class="cnt">润燥养生</span></div>
+
+  <div class="card">
+    <h3>冰糖蒸雪梨<span class="tag">招牌</span></h3>
+    <div class="ing"><b>食材：</b>雪梨 1 个、冰糖、枸杞、川贝粉（可选）。</div>
+    <div class="steps"><ol>
+      <li>雪梨洗净，顶部切下当盖，挖去梨核成梨盅。</li>
+      <li>盅内放冰糖、枸杞、少许清水（咳嗽可加川贝粉），盖上梨盖。</li>
+      <li>冷水上锅，中火蒸 25~30 分钟至梨肉软烂，连汤带肉吃。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 25~30 分钟</span>
+    <div class="tip"><b>小技巧：</b>生梨偏凉，蒸熟后润肺翻倍；咳嗽时加一点川贝粉效果更好。</div>
+  </div>
+
+  <div class="card">
+    <h3>冬瓜盅</h3>
+    <div class="ing"><b>食材：</b>小冬瓜 1 个、虾仁、火腿、香菇、高汤、盐。</div>
+    <div class="steps"><ol>
+      <li>冬瓜顶部切开当盖，挖去瓜瓤成盅。</li>
+      <li>虾仁、火腿、香菇切丁入盅，加高汤。</li>
+      <li>盖冬瓜盖，水开中火蒸 60~90 分钟，加盐调味。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 60~90 分钟</span>
+    <div class="tip"><b>小技巧：</b>冬瓜盅清爽鲜甜，宴客体面；蒸够时间瓜肉才软糯。</div>
+  </div>
+
+  <div class="card">
+    <h3>皮蛋肉饼汤</h3>
+    <div class="ing"><b>食材：</b>肉末 200g、皮蛋 2 个、姜片、盐、白胡椒。</div>
+    <div class="steps"><ol>
+      <li>肉末加盐搅上劲压成饼，铺入炖盅。</li>
+      <li>皮蛋切块放入，加姜片和清水。</li>
+      <li>水开中火蒸 40 分钟，加盐、白胡椒调味。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 40 分钟</span>
+    <div class="tip"><b>小技巧：</b>肉饼汤鲜香，皮蛋提味，是一道经典广式蒸汤。</div>
+  </div>
+
+  <div class="card">
+    <h3>山药南瓜羹</h3>
+    <div class="ing"><b>食材：</b>山药 200g、南瓜 200g、牛奶、冰糖。</div>
+    <div class="steps"><ol>
+      <li>山药南瓜去皮切块，上锅蒸 20 分钟至软。</li>
+      <li>加牛奶、冰糖，用料理机打成细腻的羹。</li>
+      <li>回锅蒸热即可。</li>
+    </ol></div>
+    <span class="meta">⏱ 蒸 20 分钟</span>
+    <div class="tip"><b>小技巧：</b>山药南瓜健脾养胃，打成羹细腻顺滑，老人孩子都爱。</div>
+  </div>
+</section>
+
+<footer>
+  蒸菜大全 · 零油烟 原汁原味 营养不流失<br>
+  共 10 大类 67 道家常蒸菜，食材 / 步骤 / 时间 / 技巧一应俱全，新手照着做零失败。
+</footer>
+
+</div>
+</body>
+</html>
